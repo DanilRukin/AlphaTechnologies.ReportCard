@@ -6,4 +6,14 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="PositionEntity\" />
+    <Folder Include="ProductionCalendarEntity\" />
+    <Folder Include="ComingEntity\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AlphaTechnologies.ReportCard.SharedKernel\AlphaTechnologies.ReportCard.SharedKernel.csproj" />
+  </ItemGroup>
+
 </Project>
