@@ -1,4 +1,5 @@
 ﻿using AlphaTechnologies.ReportCard.Domain.DepartmentAgregate.Events;
+using AlphaTechnologies.ReportCard.Domain.EmployeeAgregate;
 using AlphaTechnologies.ReportCard.SharedKernel;
 using AlphaTechnologies.ReportCard.SharedKernel.Interfaces;
 using System;
@@ -12,6 +13,9 @@ namespace AlphaTechnologies.ReportCard.Domain.DepartmentAgregate
     public class Department : EntityBase<int>, IAgregateRoot
     {
         public string Name { get; protected set; }
+        private List<Employee> _employees = new List<Employee>();
+
+        public IReadOnlyCollection<Employee> Employees => _employees.AsReadOnly();
         
         public void ChangeName(string name)
         {

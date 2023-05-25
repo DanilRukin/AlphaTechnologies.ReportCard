@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="PositionEntity\" />
     <Folder Include="ProductionCalendarEntity\" />
     <Folder Include="ComingEntity\" />
   </ItemGroup>

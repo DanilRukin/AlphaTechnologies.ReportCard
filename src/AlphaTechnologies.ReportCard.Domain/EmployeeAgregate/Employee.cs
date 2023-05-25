@@ -16,6 +16,7 @@ namespace AlphaTechnologies.ReportCard.Domain.EmployeeAgregate
         public DateOnly Birthday { get; protected set; }
         public ServiceNumber ServiceNumber { get; protected set; }
         public int Age { get; protected set; }
+        public Address Address { get; protected set; }
 
         public void ChangeFirstName(string firstName)
         {
@@ -53,6 +54,17 @@ namespace AlphaTechnologies.ReportCard.Domain.EmployeeAgregate
                 throw new ArgumentException($"Invalid age value: {age}");
             Age = age;
             AddDomainEvent(new AgeChangedEvent(Id, Age));
+        }
+
+        public void ChangeAddress(string address)
+        {
+            Address = new Address(address);
+            AddDomainEvent(new AddressChangedEvent(Id, Address.Value));
+        }
+        public void ChangeAddress(Address address)
+        {
+            Address = new Address(address.Country, address.City, address.Region, address.Street, address.HouseNumber);
+            AddDomainEvent(new AddressChangedEvent(Id, Address.Value));
         }
     }
 }

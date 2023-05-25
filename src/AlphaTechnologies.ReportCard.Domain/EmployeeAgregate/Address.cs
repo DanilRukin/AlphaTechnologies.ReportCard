@@ -1,6 +1,7 @@
 ﻿using AlphaTechnologies.ReportCard.SharedKernel;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Metrics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,13 +10,13 @@ namespace AlphaTechnologies.ReportCard.Domain.EmployeeAgregate
 {
     public class Address : ValueObject
     {
-        public string Country { get; }
-        public string City { get; }
-        public string Region { get; }
-        public string Street { get; }
+        public string? Country { get; }
+        public string? City { get; }
+        public string? Region { get; }
+        public string? Street { get; }
         public int HouseNumber { get; }
-        private string _address = string.Empty;
-        public virtual string Value { get => $"{Country}, {Region}, {City}, ул. {Street} {HouseNumber}"; protected set; } 
+        protected string _address = string.Empty;
+        public virtual string Value { get => _address == string.Empty ? $"{Country}, {Region}, {City}, ул. {Street} {HouseNumber}" : _address; protected set => _address = value; } 
 
         public Address(string country, string city, string region, string street, int houseNumber)
         {
@@ -34,6 +35,13 @@ namespace AlphaTechnologies.ReportCard.Domain.EmployeeAgregate
             if (houseNumber < 0)
                 throw new ArgumentException($"Invalid value of House Number: {houseNumber}");
             HouseNumber = houseNumber;
+        }
+
+        internal Address(string address)
+        {
+            if (string.IsNullOrWhiteSpace(address))
+                throw new ArgumentException("Address is null or empty");
+            Value = address;
         }
 
         protected override IEnumerable<object> GetEqualityComponents()
