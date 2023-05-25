@@ -1,4 +1,6 @@
-﻿using AlphaTechnologies.ReportCard.Domain.EmployeeAgregate.Events;
+﻿using AlphaTechnologies.ReportCard.Domain.DepartmentAgregate;
+using AlphaTechnologies.ReportCard.Domain.EmployeeAgregate.Events;
+using AlphaTechnologies.ReportCard.Domain.PositionEntity;
 using AlphaTechnologies.ReportCard.SharedKernel;
 using AlphaTechnologies.ReportCard.SharedKernel.Interfaces;
 using System;
@@ -17,6 +19,8 @@ namespace AlphaTechnologies.ReportCard.Domain.EmployeeAgregate
         public ServiceNumber ServiceNumber { get; protected set; }
         public int Age { get; protected set; }
         public Address Address { get; protected set; }
+        private List<Position> _positions = new List<Position>();
+        public IReadOnlyCollection<Position> Positions => _positions.AsReadOnly();
 
         public void ChangeFirstName(string firstName)
         {
@@ -65,6 +69,38 @@ namespace AlphaTechnologies.ReportCard.Domain.EmployeeAgregate
         {
             Address = new Address(address.Country, address.City, address.Region, address.Street, address.HouseNumber);
             AddDomainEvent(new AddressChangedEvent(Id, Address.Value));
+        }
+
+        public void AddPosition(Position position)
+        {
+            _positions ??= new List<Position>();
+            if (_positions.Any(p => p.Id == position.Id))
+                throw new InvalidOperationException($"Employee with id: {Id} is already on position with id: {position.Id}");
+            _positions.Add(position);
+            position.AddEmployee(this);
+            AddDomainEvent(new PositionAddedEvent(Id, position.Id));
+        }
+
+        public void RemovePosition(Position position) 
+        {
+            _positions?.Remove(position);
+            position.RemoveEmployee(this);
+            AddDomainEvent(new PositionRemovedEvent(Id, position.Id));
+        }
+
+        internal void AddDepartment(Department department)
+        {
+            if (DepartmentId == department.Id)
+                throw new InvalidOperationException($"This employee (id: {Id}) is already works in department with id: {department.Id}");
+            DepartmentId = department.Id;
+        }
+
+        internal void RemoveDepartment(Department department)
+        {
+            if (DepartmentId != department.Id)
+                throw new InvalidOperationException($"Unable to remove department with id: {department.Id} because of this employee (id: {Id}) works in department with id" +
+                    $"{DepartmentId}");
+            DepartmentId = 0;
         }
     }
 }

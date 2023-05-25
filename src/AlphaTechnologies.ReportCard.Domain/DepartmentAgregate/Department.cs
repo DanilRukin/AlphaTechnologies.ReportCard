@@ -31,5 +31,22 @@ namespace AlphaTechnologies.ReportCard.Domain.DepartmentAgregate
             Id = id;
             ChangeName(name);
         }
+
+        public void AddEmployee(Employee employee)
+        {
+            _employees ??= new List<Employee>();
+            if (_employees.Any(e => e.Id == employee.Id))
+                throw new InvalidOperationException($"This employee (id: {employee.Id}) is already works in department with id: {Id}");
+            _employees.Add(employee);
+            employee.AddDepartment(this);
+            AddDomainEvent(new EmployeeAddedEvent(Id, employee.Id));
+        }
+
+        public void RemoveEmployee(Employee employee) 
+        {
+            employee.RemoveDepartment(this);
+            _employees?.Remove(employee);
+            AddDomainEvent(new EmployeeRemovedEvent(Id, employee.Id));
+        }
     }
 }
