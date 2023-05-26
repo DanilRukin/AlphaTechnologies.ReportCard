@@ -8,8 +8,7 @@ namespace AlphaTechnologies.ReportCard.Domain.EmployeeAgregate
 {
     public interface IEmployeeFactory
     {
-        Employee Create(DateOnly birthday, string serviceNumber, string firstName, string lastName,
+        Employee Create(DateOnly birthday, Address address, string serviceNumber, string firstName, string lastName,
             string patronymic = "");
-        Employee CreateEmpty();
     }
 }

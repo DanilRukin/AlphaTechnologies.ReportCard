@@ -22,6 +22,18 @@ namespace AlphaTechnologies.ReportCard.Domain.EmployeeAgregate
         private List<Position> _positions = new List<Position>();
         public IReadOnlyCollection<Position> Positions => _positions.AsReadOnly();
 
+        protected Employee() { }
+
+        public Employee(DateOnly birthday, ServiceNumber serviceNumber, PersonalData personalData, Address address)
+        {
+            PersonalData = personalData;
+            if (birthday >= DateOnly.FromDateTime(DateTime.Today))
+                throw new InvalidOperationException($"Invalid birthday value: {birthday}");
+            Birthday = birthday;
+            ServiceNumber = serviceNumber;
+            Address = address;
+        }
+
         public void ChangeFirstName(string firstName)
         {
             PersonalData = new PersonalData(firstName, PersonalData.LastName, PersonalData.Patronymic);
