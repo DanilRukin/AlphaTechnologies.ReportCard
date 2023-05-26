@@ -17,7 +17,12 @@ namespace AlphaTechnologies.ReportCard.Domain.WorkStatusEntity
 
         protected WorkStatus() { }
 
-        public void ChangeName(string name)
+        public WorkStatus(string code)
+        {
+            ChangeCode(code);
+        }
+
+        public void ChangeCode(string name)
         {
             if (string.IsNullOrWhiteSpace(name))
                 throw new ArgumentException($"The name of work status cannot be empty or null");

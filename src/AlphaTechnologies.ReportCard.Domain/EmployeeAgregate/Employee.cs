@@ -129,18 +129,19 @@ namespace AlphaTechnologies.ReportCard.Domain.EmployeeAgregate
                 throw new InvalidOperationException($"Employee with id: {Id} is already cheked in");
             coming.ChangeWorkStatus(status);
             coming.ChangeEmployee(this);
+            _comings.Add(coming);
             status.AddComing(coming);
             AddDomainEvent(new EmployeeChekedInEvent(Id, date, status.Code));
             return coming;
         }
 
-        public void ChangeWorkStatus(DateOnly date, WorkStatus status)
+        public void ChangeWorkStatus(DateOnly date, WorkStatus oldStatus, WorkStatus status)
         {
             Coming? coming = _comings.FirstOrDefault(c => c.Date == date);
             if (coming == default)
                 throw new InvalidOperationException($"Employee was not cheked yet. Check it first");
             coming.ChangeWorkStatus(status);
-            status.RemoveComing(coming);
+            oldStatus.RemoveComing(coming);
             status.AddComing(coming);
             AddDomainEvent(new WorkStatusChangedEvent(Id, date, status.Code));
         }
