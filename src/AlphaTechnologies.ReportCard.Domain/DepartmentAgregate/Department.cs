@@ -26,9 +26,9 @@ namespace AlphaTechnologies.ReportCard.Domain.DepartmentAgregate
         }
         protected Department() { }
 
-        internal Department(int id, string name)
+        public Department(string name)
         {
-            Id = id;
+            //Id = id;
             ChangeName(name);
         }
 

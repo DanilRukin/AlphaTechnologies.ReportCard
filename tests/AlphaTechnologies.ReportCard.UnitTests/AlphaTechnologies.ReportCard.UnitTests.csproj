@@ -22,4 +22,8 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\AlphaTechnologies.ReportCard.Domain\AlphaTechnologies.ReportCard.Domain.csproj" />
+  </ItemGroup>
+
 </Project>
