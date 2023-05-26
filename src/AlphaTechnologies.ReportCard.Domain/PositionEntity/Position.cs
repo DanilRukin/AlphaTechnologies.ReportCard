@@ -17,9 +17,8 @@ namespace AlphaTechnologies.ReportCard.Domain.PositionEntity
 
         protected Position() { }
 
-        public Position(int id, string name)
+        public Position(string name)
         {
-            Id = id;
             ChangeName(name);
         }
 

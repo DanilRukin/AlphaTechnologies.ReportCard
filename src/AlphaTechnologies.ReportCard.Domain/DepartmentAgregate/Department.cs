@@ -28,7 +28,6 @@ namespace AlphaTechnologies.ReportCard.Domain.DepartmentAgregate
 
         public Department(string name)
         {
-            //Id = id;
             ChangeName(name);
         }
 

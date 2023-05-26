@@ -1,6 +1,8 @@
-﻿using AlphaTechnologies.ReportCard.Domain.DepartmentAgregate;
+﻿using AlphaTechnologies.ReportCard.Domain.ComingEntity;
+using AlphaTechnologies.ReportCard.Domain.DepartmentAgregate;
 using AlphaTechnologies.ReportCard.Domain.EmployeeAgregate.Events;
 using AlphaTechnologies.ReportCard.Domain.PositionEntity;
+using AlphaTechnologies.ReportCard.Domain.WorkStatusEntity;
 using AlphaTechnologies.ReportCard.SharedKernel;
 using AlphaTechnologies.ReportCard.SharedKernel.Interfaces;
 using System;
@@ -21,6 +23,9 @@ namespace AlphaTechnologies.ReportCard.Domain.EmployeeAgregate
         public Address Address { get; protected set; }
         private List<Position> _positions = new List<Position>();
         public IReadOnlyCollection<Position> Positions => _positions.AsReadOnly();
+
+        private List<Coming> _comings = new List<Coming>();
+        public IReadOnlyCollection<Coming> Comings => _comings.AsReadOnly();
 
         protected Employee() { }
 
@@ -95,6 +100,8 @@ namespace AlphaTechnologies.ReportCard.Domain.EmployeeAgregate
 
         public void RemovePosition(Position position) 
         {
+            if (_positions?.Any(p => p.Id == position.Id) != true)
+                throw new InvalidOperationException($"Employee with id: {Id} has no such position with id: {position.Id}");
             _positions?.Remove(position);
             position.RemoveEmployee(this);
             AddDomainEvent(new PositionRemovedEvent(Id, position.Id));
@@ -113,6 +120,29 @@ namespace AlphaTechnologies.ReportCard.Domain.EmployeeAgregate
                 throw new InvalidOperationException($"Unable to remove department with id: {department.Id} because of this employee (id: {Id}) works in department with id" +
                     $"{DepartmentId}");
             DepartmentId = 0;
+        }
+
+        public Coming CheckIn(DateOnly date, WorkStatus status)
+        {
+            Coming coming = new Coming(date);
+            if (_comings.Any(c => c.Date == coming.Date))
+                throw new InvalidOperationException($"Employee with id: {Id} is already cheked in");
+            coming.ChangeWorkStatus(status);
+            coming.ChangeEmployee(this);
+            status.AddComing(coming);
+            AddDomainEvent(new EmployeeChekedInEvent(Id, date, status.Code));
+            return coming;
+        }
+
+        public void ChangeWorkStatus(DateOnly date, WorkStatus status)
+        {
+            Coming? coming = _comings.FirstOrDefault(c => c.Date == date);
+            if (coming == default)
+                throw new InvalidOperationException($"Employee was not cheked yet. Check it first");
+            coming.ChangeWorkStatus(status);
+            status.RemoveComing(coming);
+            status.AddComing(coming);
+            AddDomainEvent(new WorkStatusChangedEvent(Id, date, status.Code));
         }
     }
 }

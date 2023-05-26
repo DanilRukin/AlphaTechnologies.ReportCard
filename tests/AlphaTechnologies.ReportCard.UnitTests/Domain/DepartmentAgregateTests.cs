@@ -9,20 +9,8 @@ using System.Threading.Tasks;
 
 namespace AlphaTechnologies.ReportCard.UnitTests.Domain
 {
-    public class DepartmentAgregateTests
+    public class DepartmentAgregateTests : DomainFixture
     {
-        private IEmployeeFactory _employeeFactory;
-        private IDepartmentFactory _departmentFactory;
-
-        private DateTime _date;
-
-        public DepartmentAgregateTests()
-        {
-            _employeeFactory = new FakeEmployeeFactory();
-            _departmentFactory = new FakeDepartmentFactory();
-            _date = DateTime.MinValue;
-        }
-
         [Fact]
         public void AddEmployee_NoSuchEmployeeInDepartment_EmployeeAdded()
         {
@@ -51,10 +39,33 @@ namespace AlphaTechnologies.ReportCard.UnitTests.Domain
             Assert.Equal(message, exc.Message);
         }
 
-        private Employee GetNextDefaultEmployee() => _employeeFactory.Create(DateOnly.FromDateTime(_date), 
-            new Address("Russia", "Barnaul", "Altay region", "Lenina", 15), Guid.NewGuid().ToString(),
-            "Ivanov", "Ivan", "Ivanovich");
+        [Fact]
+        public void RemoveEmployee_EmployeeWorkedInDepartment_EmployeeWasRemoved()
+        {
+            Department department = GetNextDefaultDepartment();
+            Employee employee = GetNextDefaultEmployee();
+            department.AddEmployee(employee);
 
-        private Department GetNextDefaultDepartment() => _departmentFactory.Create("Department");
+            Assert.Equal(department.Id, employee.DepartmentId);
+            Assert.True(employee.DepartmentId > 0);
+
+            department.RemoveEmployee(employee);
+
+            Assert.Empty(department.Employees);
+            Assert.True(employee.DepartmentId == 0);
+        }
+
+        [Fact]
+        public void RemoveEmployee_NoSuchEmployeeInDepartment_ThrowsExceptionWithMessage()
+        {
+            Department department = GetNextDefaultDepartment();
+            Employee employee = GetNextDefaultEmployee();
+            string message = $"Unable to remove department with id: {department.Id} because of this employee (id: {employee.Id}) works in department with id" +
+                    $"{employee.DepartmentId}";
+
+            InvalidOperationException exc = Assert.Throws<InvalidOperationException>(() => department.RemoveEmployee(employee));
+            Assert.NotNull(exc);
+            Assert.Equal(message, exc.Message);
+        }
     }
 }
