@@ -44,6 +44,8 @@ namespace AlphaTechnologies.ReportCard.Domain.EmployeeAgregate
             Value = address;
         }
 
+        protected Address() { }
+
         protected override IEnumerable<object> GetEqualityComponents()
         {
             yield return Country; 

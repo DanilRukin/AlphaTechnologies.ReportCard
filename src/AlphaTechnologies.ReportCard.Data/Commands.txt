@@ -1,0 +1,15 @@
+﻿//
+// Add migrations
+//
+Add-Migration InitAlphaTechnologiesRepordCardDbContext -c AlphaTechnologiesRepordCardDbContext -o Migrations/AlphaTechnologiesRepordCardDbContext
+//
+// Update-Database
+//
+Update-Database -Context AlphaTechnologiesRepordCardDbContext
+
+
+// note: to add-migration and update database you need to select AlphaTechnologies.ReportCard.Presentation.WPF as startup project,
+// you should select AlphaTechnologies.ReportCard.Data.MySql project with your migrations assembly in PM console,
+// also you need to add the following references: 
+// 1) AlphaTechnologies.ReportCard.Data.MySql has reference to AlphaTechnologies.ReportCard.Data (AlphaTechnologiesRepordCardDbContext is here)
+// 2) AlphaTechnologies.ReportCard.Presentation.WPF has reference to AlphaTechnologies.ReportCard.Data and AlphaTechnologies.ReportCard.Data.MySql

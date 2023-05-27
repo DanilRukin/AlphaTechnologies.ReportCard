@@ -1,5 +1,9 @@
-﻿using AlphaTechnologies.ReportCard.Presentation.WPF.Models.Services;
+﻿using AlphaTechnologies.ReportCard.Data;
+using AlphaTechnologies.ReportCard.Presentation.WPF.Models.Services;
 using AlphaTechnologies.ReportCard.Presentation.WPF.ViewModels;
+using AlphaTechnologies.ReportCard.SharedKernel;
+using AlphaTechnologies.ReportCard.SharedKernel.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
@@ -25,12 +29,23 @@ namespace AlphaTechnologies.ReportCard.Presentation.WPF
 
         public static IHost Host => _host ??= Program.CreateHostBuilder(Environment.GetCommandLineArgs()).Build();
 
+        private static string _migrationAssembly = "AlphaTechnologies.ReportCard.Data.MySql";
+
         public static IServiceProvider Services => Host.Services;
 
         public static void ConfigureServices(HostBuilderContext host, IServiceCollection services) => services
            .AddServices()
            .AddViewModels()
-        ;
+           .AddMediatR(conf =>
+           {
+               conf.RegisterServicesFromAssembly(typeof(Program).Assembly);
+           })
+           .AddScoped<IDomainEventDispatcher, DomainEventDispatcher>()
+           .AddDbContext<AlphaTechnologiesRepordCardDbContext>(options =>
+           {
+               options.UseMySQL("Server=myServerAddress;Database=myDataBase;Uid=myUsername;Pwd=myPassword;",
+                   sql => sql.MigrationsAssembly(_migrationAssembly));
+           });
 
         protected override async void OnStartup(StartupEventArgs e)
         {

@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\AlphaTechnologies.ReportCard.Data\AlphaTechnologies.ReportCard.Data.csproj" />
+  </ItemGroup>
+
 </Project>
