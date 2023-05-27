@@ -1,6 +1,7 @@
 ﻿using AlphaTechnologies.ReportCard.Data;
-using AlphaTechnologies.ReportCard.Presentation.WPF.Models.Services;
+using AlphaTechnologies.ReportCard.Presentation.WPF.Models;
 using AlphaTechnologies.ReportCard.Presentation.WPF.ViewModels;
+using AlphaTechnologies.ReportCard.Presentation.WPF.Views.Windows;
 using AlphaTechnologies.ReportCard.SharedKernel;
 using AlphaTechnologies.ReportCard.SharedKernel.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -25,21 +26,19 @@ namespace AlphaTechnologies.ReportCard.Presentation.WPF
 
         public static Window ActivedWindow => Current.Windows.Cast<Window>().FirstOrDefault(w => w.IsActive);
 
-        private static IHost _host;
-
-        public static IHost Host => _host ??= Program.CreateHostBuilder(Environment.GetCommandLineArgs()).Build();
-
         private static string _migrationAssembly = "AlphaTechnologies.ReportCard.Data.MySql";
 
-        public static IServiceProvider Services => Host.Services;
+        private static IServiceProvider? _services;
+        public static IServiceProvider? Services => _services ??= InitializeServices().BuildServiceProvider();
 
-        public static void ConfigureServices(HostBuilderContext host, IServiceCollection services) => services
-           .AddServices()
-           .AddViewModels()
-           .AddMediatR(conf =>
-           {
-               conf.RegisterServicesFromAssembly(typeof(Program).Assembly);
-           })
+        private static IServiceCollection InitializeServices()
+        {
+            var services = new ServiceCollection();
+
+            services.AddMediatR(conf =>
+            {
+                conf.RegisterServicesFromAssembly(typeof(App).Assembly);
+            })
            .AddScoped<IDomainEventDispatcher, DomainEventDispatcher>()
            .AddDbContext<AlphaTechnologiesRepordCardDbContext>(options =>
            {
@@ -47,21 +46,28 @@ namespace AlphaTechnologies.ReportCard.Presentation.WPF
                    sql => sql.MigrationsAssembly(_migrationAssembly));
            });
 
-        protected override async void OnStartup(StartupEventArgs e)
+            services.AddTransient<MainWindowViewModel>();
+            services.AddTransient<ReportCardWindowViewModel>();
+
+            services.AddTransient(
+            s =>
+            {
+                var scope = s.CreateScope();
+                var model = scope.ServiceProvider.GetRequiredService<ReportCardWindowViewModel>();
+                var window = new ReportCardWindow { DataContext = model };
+                model.DialogComplete += (_, _) => window.Close();
+                window.Closed += (_, _) => scope.Dispose();
+
+                return window;
+            });
+
+            return services;
+        }           
+
+        protected override void OnStartup(StartupEventArgs e)
         {
-            var host = Host;
-
-            base.OnStartup(e);
-
-            await host.StartAsync();
-
-        }
-
-        protected override async void OnExit(ExitEventArgs e)
-        {
-            base.OnExit(e);
-
-            using (Host) await Host.StopAsync();
+            var window = Services.GetRequiredService<ReportCardWindow>();
+            window.Show();
         }
     }
 }

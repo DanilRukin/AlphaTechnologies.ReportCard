@@ -1,0 +1,123 @@
+﻿<Window x:Class="AlphaTechnologies.ReportCard.Presentation.WPF.Views.Windows.ReportCardWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" mc:Ignorable="d"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:AlphaTechnologies.ReportCard.Presentation.WPF.Views.Windows"
+        
+        xmlns:vm="clr-namespace:AlphaTechnologies.ReportCard.Presentation.WPF.ViewModels"
+        d:DataContext="{d:DesignInstance vm:ReportCardWindowViewModel, IsDesignTimeCreatable=True}"
+
+        Title="{Binding Title}" Height="450" Width="1013">
+
+    <Window.Resources>
+        <Style TargetType="DataGrid">
+            <Setter Property="AutoGenerateColumns" Value="False"/>
+            <Setter Property="CanUserAddRows" Value="False"/>
+            <Setter Property="CanUserDeleteRows" Value="False"/>
+            <Setter Property="CanUserSortColumns" Value="False"/>
+            <Setter Property="AlternatingRowBackground" Value="Aquamarine"/>
+            <Setter Property="VerticalGridLinesBrush" Value="BlueViolet"/>
+            <Setter Property="GridLinesVisibility" Value="Vertical"/>
+        </Style>
+    </Window.Resources>
+
+    <DockPanel>
+        <StatusBar DockPanel.Dock="Bottom">
+            <StatusBarItem Content="{Binding Status}"/>
+        </StatusBar>
+        <DockPanel>
+            <GroupBox Header="Департаменты" MinWidth="200">
+                <ListBox>
+                    <ListBoxItem>skgjskg</ListBoxItem>
+                    <ListBoxItem>skgjskg</ListBoxItem>
+                    <ListBoxItem>skgjskg</ListBoxItem>
+                </ListBox>
+            </GroupBox>
+            <TabControl>
+                <TabItem Header="Январь">
+                    <TabItem.Content>
+                        <DataGrid>
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="ФИО"/>
+                                <DataGridTextColumn Header="Должность"/>
+                                <DataGridTextColumn Header="Табельный №"/>
+
+                                <DataGridTemplateColumn>
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <DataGrid>
+                                                <DataGrid.Columns>
+                                                    <DataGridTextColumn Header="fjkj"/>
+                                                    <DataGridTextColumn Header="fjkj"/>
+                                                    <DataGridTextColumn Header="fjkj"/>
+                                                </DataGrid.Columns>
+                                            </DataGrid>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+
+                                <DataGridTextColumn Header="Итого"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </TabItem.Content>
+                </TabItem>
+                <TabItem Header="Февраль">
+                    <TabItem.Content>
+                        fksdfjkdsjs
+                    </TabItem.Content>
+                </TabItem>
+                <TabItem Header="Март">
+                    <TabItem.Content>
+                        fksdfjkdsjs
+                    </TabItem.Content>
+                </TabItem>
+                <TabItem Header="Апрель">
+                    <TabItem.Content>
+                        fksdfjkdsjs
+                    </TabItem.Content>
+                </TabItem>
+                <TabItem Header="Май">
+                    <TabItem.Content>
+                        fksdfjkdsjs
+                    </TabItem.Content>
+                </TabItem>
+                <TabItem Header="Июнь">
+                    <TabItem.Content>
+                        fksdfjkdsjs
+                    </TabItem.Content>
+                </TabItem>
+                <TabItem Header="Июль">
+                    <TabItem.Content>
+                        fksdfjkdsjs
+                    </TabItem.Content>
+                </TabItem>
+                <TabItem Header="Август">
+                    <TabItem.Content>
+                        fksdfjkdsjs
+                    </TabItem.Content>
+                </TabItem>
+                <TabItem Header="Сентябрь">
+                    <TabItem.Content>
+                        fksdfjkdsjs
+                    </TabItem.Content>
+                </TabItem>
+                <TabItem Header="Октябрь">
+                    <TabItem.Content>
+                        fksdfjkdsjs
+                    </TabItem.Content>
+                </TabItem>
+                <TabItem Header="Ноябрь">
+                    <TabItem.Content>
+                        fksdfjkdsjs
+                    </TabItem.Content>
+                </TabItem>
+                <TabItem Header="Декабрь">
+                    <TabItem.Content>
+                        fksdfjkdsjs
+                    </TabItem.Content>
+                </TabItem>
+            </TabControl>
+        </DockPanel>
+    </DockPanel>
+</Window>

@@ -4,7 +4,6 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>net7.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
-    <StartupObject>AlphaTechnologies.ReportCard.Presentation.WPF.Program</StartupObject>
   </PropertyGroup>
 
   <ItemGroup>
@@ -17,6 +16,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AlphaTechnologies.ReportCard.Data.MySql\AlphaTechnologies.ReportCard.Data.MySql.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Models\Services\" />
   </ItemGroup>
 
 </Project>
