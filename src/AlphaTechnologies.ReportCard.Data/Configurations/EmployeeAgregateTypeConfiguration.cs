@@ -25,6 +25,7 @@ namespace AlphaTechnologies.ReportCard.Data.Configurations
                 pd.Property(p => p.FirstName).HasColumnName(nameof(PersonalData.FirstName));
                 pd.Property(p => p.LastName).HasColumnName(nameof(PersonalData.LastName));
                 pd.Property(p => p.Patronymic).HasColumnName(nameof(PersonalData.Patronymic));
+                pd.Property(p => p.Patronymic).IsRequired(false);
             });
             builder.OwnsOne(e => e.ServiceNumber, sn => 
             {

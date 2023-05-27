@@ -22,5 +22,6 @@ namespace AlphaTechnologies.ReportCard.Data
         internal const string DEPARTMENT_EMPLOYEES = "_employees";
         internal const string HOLIDAYS_LIST_NAME = "_holidays";
         internal const string PRODUCTION_CALENDAR_HOLIDAYS_ATTRIBUTE_NAME = "holidays";
+        internal const string WORK_STATUS_COMINGS = "_comings";
     }
 }
