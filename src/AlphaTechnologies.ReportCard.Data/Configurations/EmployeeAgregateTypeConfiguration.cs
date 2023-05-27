@@ -44,6 +44,7 @@ namespace AlphaTechnologies.ReportCard.Data.Configurations
 
             builder.Ignore(e => e.Positions);
             builder.Ignore(e => e.Comings);
+            builder.Ignore(e => e.DomainEvents);
 
             builder.HasMany<Position>(DataConstants.EMPLOYEES_POSITIONS)
                 .WithMany(DataConstants.POSITIONS_EMPLOYEES)

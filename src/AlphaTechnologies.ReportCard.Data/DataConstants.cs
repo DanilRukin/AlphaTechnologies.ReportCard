@@ -19,5 +19,6 @@ namespace AlphaTechnologies.ReportCard.Data
         internal const string POSITIONS_EMPLOYEES = "_employees";
         internal const string EMPLOYEE_POSITION_TABLE_NAME = "Employee_Position";
         internal const string EMPLOYEE_COMINGS = "_comings";
+        internal const string DEPARTMENT_EMPLOYEES = "_employees";
     }
 }
