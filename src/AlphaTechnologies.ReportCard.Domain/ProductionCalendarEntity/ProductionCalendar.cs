@@ -14,17 +14,29 @@ namespace AlphaTechnologies.ReportCard.Domain.ProductionCalendarEntity
         public int Month { get; protected set; }
         private string _holidays = string.Empty;
         private List<DateOnly> _holidaysDates = new List<DateOnly>();
-        public IReadOnlyCollection<DateOnly> Holidays => _holidaysDates.AsReadOnly();
-
-        private void FillHolidayDatesFromString(string holidays)  // holidays = '1+,2*,12,13,20,21'
+        public IReadOnlyCollection<DateOnly> Holidays
         {
+            get
+            {
+                if (_holidays != string.Empty)
+                {
+                     _holidaysDates = HolidayDatesFromString(_holidays);
+                }
+                return _holidaysDates;
+            }
+        }
+
+        private List<DateOnly> HolidayDatesFromString(string holidays)  // holidays = '1+,2*,12,13,20,21'
+        {
+            List<DateOnly> result = new List<DateOnly>();
             string[] digits = holidays.Split(',', StringSplitOptions.RemoveEmptyEntries);
             for (int i = 0; i < digits.Length; i++)
             {
                 digits[i] = RemoveSymbols(digits[i]);
                 DateOnly date = new DateOnly(Year, Month, Convert.ToInt32(digits[i]));
-                _holidaysDates.Add(date);
+                result.Add(date);
             }
+            return result;
         }
 
         private string RemoveSymbols(string src)
@@ -42,7 +54,7 @@ namespace AlphaTechnologies.ReportCard.Domain.ProductionCalendarEntity
 
         public bool IsHoliday(DateOnly date)
         {
-            _holidaysDates ??= new List<DateOnly>();
+            _holidaysDates ??= HolidayDatesFromString(_holidays);
             return _holidaysDates.Contains(date);
         }
     }

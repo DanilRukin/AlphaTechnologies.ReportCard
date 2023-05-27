@@ -19,13 +19,15 @@ namespace AlphaTechnologies.ReportCard.Domain.EmployeeAgregate
         public PersonalData PersonalData { get; protected set; }
         public DateOnly Birthday { get; protected set; }
         public ServiceNumber ServiceNumber { get; protected set; }
-        public int Age { get; protected set; }
+        //public int Age { get; protected set; } must be calculated
         public Address Address { get; protected set; }
         private List<Position> _positions = new List<Position>();
         public IReadOnlyCollection<Position> Positions => _positions.AsReadOnly();
 
         private List<Coming> _comings = new List<Coming>();
         public IReadOnlyCollection<Coming> Comings => _comings.AsReadOnly();
+
+        public bool IsRemote { get; protected set; } = false;
 
         protected Employee() { }
 
@@ -69,13 +71,13 @@ namespace AlphaTechnologies.ReportCard.Domain.EmployeeAgregate
             AddDomainEvent(new ServiceNumberChangedEvent(Id, ServiceNumber.Value));
         }
 
-        public void ChangeAge(int age)
-        {
-            if (age < 1 || age > 150)
-                throw new ArgumentException($"Invalid age value: {age}");
-            Age = age;
-            AddDomainEvent(new AgeChangedEvent(Id, Age));
-        }
+        //public void ChangeAge(int age)
+        //{
+        //    if (age < 1 || age > 150)
+        //        throw new ArgumentException($"Invalid age value: {age}");
+        //    Age = age;
+        //    AddDomainEvent(new AgeChangedEvent(Id, Age));
+        //}
 
         public void ChangeAddress(string address)
         {
@@ -144,6 +146,19 @@ namespace AlphaTechnologies.ReportCard.Domain.EmployeeAgregate
             oldStatus.RemoveComing(coming);
             status.AddComing(coming);
             AddDomainEvent(new WorkStatusChangedEvent(Id, date, status.Code));
+        }
+
+        public void TransferToRemoteWork()
+        {
+            if (IsRemote)
+                throw new InvalidOperationException($"Employee (id: {Id}) is already on remote work");
+            IsRemote = true;
+        }
+        public void TransferFromRemoteWork()
+        {
+            if (!IsRemote)
+                throw new InvalidOperationException($"Employee (id: {Id}) is not on remote work");
+            IsRemote = false;
         }
     }
 }
