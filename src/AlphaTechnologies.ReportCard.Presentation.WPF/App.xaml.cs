@@ -1,5 +1,4 @@
 ﻿using AlphaTechnologies.ReportCard.Data;
-using AlphaTechnologies.ReportCard.Presentation.WPF.Models;
 using AlphaTechnologies.ReportCard.Presentation.WPF.ViewModels;
 using AlphaTechnologies.ReportCard.Presentation.WPF.Views.Windows;
 using AlphaTechnologies.ReportCard.SharedKernel;

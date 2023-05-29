@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AlphaTechnologies.ReportCard.Presentation.WPF.Models
+namespace AlphaTechnologies.ReportCard.Presentation.WPF.ViewModels.DataViewModels
 {
     public class EmployeeWithComingsModel : ViewModel
     {
@@ -21,7 +21,7 @@ namespace AlphaTechnologies.ReportCard.Presentation.WPF.Models
 
         public ObservableCollection<ComingDay> ComingDays { get; set; } = new ObservableCollection<ComingDay>();
 
-        public string Result 
+        public string Result
         {
             get
             {

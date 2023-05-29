@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AlphaTechnologies.ReportCard.Presentation.WPF.Models
+namespace AlphaTechnologies.ReportCard.Presentation.WPF.ViewModels.DataViewModels
 {
     public enum WorkStatusEnum
     {
@@ -74,6 +74,24 @@ namespace AlphaTechnologies.ReportCard.Presentation.WPF.Models
                 WorkStatusEnum.Unknown => "",
                 _ => throw new ArgumentException($"Cannot convert value '{workStatusEnum}'" +
                     $" to correct code"),
+            };
+
+        public static WorkStatusEnum FromCode(this WorkStatusEnum workStatusEnum, string code) =>
+            code switch
+            {
+                "" => WorkStatusEnum.Unknown,
+                "Я" => WorkStatusEnum.FullDay,
+                "Н" => WorkStatusEnum.NotOnWork,
+                "В" => WorkStatusEnum.Holiday,
+                "Рв" => WorkStatusEnum.WorkOnHoliday,
+                "Б" => WorkStatusEnum.Seek,
+                "К" => WorkStatusEnum.BusinessTrip,
+                "ОТ" => WorkStatusEnum.PaidVacation,
+                "До" => WorkStatusEnum.UnpaidVacation,
+                "Хд" => WorkStatusEnum.BusinessDay,
+                "У" => WorkStatusEnum.LeaveForThePeriodOfStudy,
+                "Ож" => WorkStatusEnum.ParentalLeave,
+                _ => throw new ArgumentException($"Code '{code}' can not be converted to WorkStatusEnum"),
             };
     }
 }

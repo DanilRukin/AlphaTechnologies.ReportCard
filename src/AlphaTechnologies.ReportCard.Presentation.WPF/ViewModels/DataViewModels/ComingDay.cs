@@ -8,7 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 
-namespace AlphaTechnologies.ReportCard.Presentation.WPF.Models
+namespace AlphaTechnologies.ReportCard.Presentation.WPF.ViewModels.DataViewModels
 {
     public class ComingDay : DataGridTextColumn
     {
@@ -20,7 +20,7 @@ namespace AlphaTechnologies.ReportCard.Presentation.WPF.Models
             Number = number;
             WorkStatus = workStatus;
             Header = Number;
-            Binding = new Binding(WorkStatus.GetCode());
+            Binding = new Binding(nameof(WorkStatus));
         }
 
         //protected override FrameworkElement GenerateEditingElement(DataGridCell cell, object dataItem)
