@@ -14,5 +14,10 @@ namespace AlphaTechnologies.ReportCard.Presentation.WPF.Models
         {
             Name = name;
         }
+
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 }

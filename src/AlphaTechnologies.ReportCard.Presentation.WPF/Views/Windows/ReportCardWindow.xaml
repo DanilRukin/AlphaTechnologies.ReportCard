@@ -28,37 +28,16 @@
         </StatusBar>
         <DockPanel>
             <GroupBox Header="Департаменты" MinWidth="200">
-                <ListBox>
-                    <ListBoxItem>skgjskg</ListBoxItem>
-                    <ListBoxItem>skgjskg</ListBoxItem>
-                    <ListBoxItem>skgjskg</ListBoxItem>
+                <ListBox ItemsSource="{Binding Departments}" SelectedItem="{Binding SelectedDepartment}">
+                    
                 </ListBox>
             </GroupBox>
             <TabControl>
                 <TabItem Header="Январь">
                     <TabItem.Content>
-                        <DataGrid>
-                            <DataGrid.Columns>
-                                <DataGridTextColumn Header="ФИО"/>
-                                <DataGridTextColumn Header="Должность"/>
-                                <DataGridTextColumn Header="Табельный №"/>
-
-                                <DataGridTemplateColumn>
-                                    <DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <DataGrid>
-                                                <DataGrid.Columns>
-                                                    <DataGridTextColumn Header="fjkj"/>
-                                                    <DataGridTextColumn Header="fjkj"/>
-                                                    <DataGridTextColumn Header="fjkj"/>
-                                                </DataGrid.Columns>
-                                            </DataGrid>
-                                        </DataTemplate>
-                                    </DataGridTemplateColumn.CellTemplate>
-                                </DataGridTemplateColumn>
-
-                                <DataGridTextColumn Header="Итого"/>
-                            </DataGrid.Columns>
+                        <DataGrid local:DataGridColumnsBehavior.BindableColumns="{Binding ComingDays}"
+                                  AutoGenerateColumns="False">
+                            
                         </DataGrid>
                     </TabItem.Content>
                 </TabItem>
