@@ -1,4 +1,5 @@
-﻿using AlphaTechnologies.ReportCard.Data;
+﻿using AlphaTechnologies.ReportCard.Application;
+using AlphaTechnologies.ReportCard.Data;
 using AlphaTechnologies.ReportCard.Presentation.WPF.ViewModels;
 using AlphaTechnologies.ReportCard.Presentation.WPF.Views.Windows;
 using AlphaTechnologies.ReportCard.SharedKernel;
@@ -19,7 +20,7 @@ namespace AlphaTechnologies.ReportCard.Presentation.WPF
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
-    public partial class App : Application
+    public partial class App : System.Windows.Application
     {
         public static Window FocusedWindow => Current.Windows.Cast<Window>().FirstOrDefault(w => w.IsFocused);
 
@@ -38,6 +39,7 @@ namespace AlphaTechnologies.ReportCard.Presentation.WPF
             {
                 conf.RegisterServicesFromAssembly(typeof(App).Assembly);
             })
+           .AddApplicationModule()
            .AddScoped<IDomainEventDispatcher, DomainEventDispatcher>()
            .AddDbContext<AlphaTechnologiesRepordCardDbContext>(options =>
            {

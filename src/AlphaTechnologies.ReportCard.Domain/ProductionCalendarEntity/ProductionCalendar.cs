@@ -52,6 +52,20 @@ namespace AlphaTechnologies.ReportCard.Domain.ProductionCalendarEntity
 
         protected ProductionCalendar() { }
 
+        public static ProductionCalendar FromHolidays(int year, int month, string holidays)
+        {
+            ProductionCalendar calendar = new ProductionCalendar();
+            if (year < 1800)
+                throw new ArgumentException($"Year value '{year}' is invalid");
+            calendar.Year = year;
+            if (month < 1 || month > 12)
+                throw new ArgumentException($"Month value '{month}' is invalid");
+            calendar.Month = month;
+            var field = calendar.GetType().GetField("_holidays", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+            field.SetValue(calendar, holidays);
+            return calendar;
+        }
+
         public bool IsHoliday(DateOnly date)
         {
             _holidaysDates ??= HolidayDatesFromString(_holidays);
