@@ -1,4 +1,7 @@
-﻿using AlphaTechnologies.ReportCard.Presentation.WPF.ViewModels.Base;
+﻿using AlphaTechnologies.ReportCard.Application.ComingsEntity.Queries;
+using AlphaTechnologies.ReportCard.Application.WorkStatusEntity.Queries;
+using AlphaTechnologies.ReportCard.Presentation.WPF.ViewModels.Base;
+using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,9 +19,26 @@ namespace AlphaTechnologies.ReportCard.Presentation.WPF.ViewModels.DataViewModel
         private Brush _color = Brushes.Transparent;
         public Brush Color { get => _color; set => Set(ref _color, value); }
 
-        public static DayViewModel Load()
+        public static async Task<DayViewModel> Load(Guid comingId, IMediator mediator)
         {
-
+            GetCommingByIdQuery comingQuery = new(comingId);
+            var comingResponse = await mediator.Send(comingQuery);
+            if (comingResponse.IsSuccess)
+            {
+                DayViewModel result = new DayViewModel();
+                GetWorkStatusByIdQuery workStatusQuery = new(new WorkStatusIncludeOptions(comingResponse.Value.WorkStatusId, false));
+                var workStatusResult = await mediator.Send(workStatusQuery);
+                if (workStatusResult.IsSuccess)
+                {
+                    result.WorkStatus = WorkStatusEnum.Unknown.FromCode(workStatusResult.Value.Code);
+                    // TODO: set the color using ProductionCalendar
+                }
+                return result;
+            }
+            else
+            {
+                return new DayViewModel();
+            }
         }
     }
 }
