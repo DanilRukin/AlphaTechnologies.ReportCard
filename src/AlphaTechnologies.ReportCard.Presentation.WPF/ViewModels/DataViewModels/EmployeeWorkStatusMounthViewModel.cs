@@ -1,4 +1,5 @@
-﻿using AlphaTechnologies.ReportCard.Application.EmployeeAgregate.Queries;
+﻿using AlphaTechnologies.ReportCard.Application.ComingsEntity.Queries;
+using AlphaTechnologies.ReportCard.Application.EmployeeAgregate.Queries;
 using AlphaTechnologies.ReportCard.Application.PositionEntity.Queries;
 using AlphaTechnologies.ReportCard.Presentation.WPF.ViewModels.Base;
 using MediatR;
@@ -142,19 +143,26 @@ namespace AlphaTechnologies.ReportCard.Presentation.WPF.ViewModels.DataViewModel
                 {
                     var position = positionResponse.Value;
                     EmployeeWorkStatusMounthViewModel result = new($"{employee.FirstName} {employee.LastName} {employee.Patronymic}",
-                        employee.ServiceNumber, position.Name);
+                        employee.ServiceNumber, position.Name, year, month);
                     PropertyInfo[] properties = typeof(EmployeeWorkStatusMounthViewModel).GetProperties();
                     PropertyInfo? propertyToSetValue;
                     DayViewModel dayViewModel;
-                    foreach (var comingDayId in employee.ComingDaysIds)
+                    GetComingWithEmployeeYearAndMonthQuery getComingWithEmployeeYearAndMonthQuery = new(employeeId, year, month);
+                    var comingResponse = await mediator.Send(getComingWithEmployeeYearAndMonthQuery);
+                    if (comingResponse.IsSuccess)
                     {
-                        dayViewModel = await DayViewModel.Load(comingDayId, mediator);
-                        propertyToSetValue = properties.FirstOrDefault(p => p.Name == $"Day_{dayViewModel.Date.Day}");
-                        if (propertyToSetValue != null)
+                        var comings = comingResponse.Value;
+                        foreach (var comingDay in comings)
                         {
-                            propertyToSetValue.SetValue(result, dayViewModel);
+                            dayViewModel = await DayViewModel.Load(comingDay.Id, mediator);
+                            propertyToSetValue = properties.FirstOrDefault(p => p.Name == $"Day_{dayViewModel.Date.Day}");
+                            if (propertyToSetValue != null)
+                            {
+                                propertyToSetValue.SetValue(result, dayViewModel);
+                            }
                         }
                     }
+                    
                     return result;
                 }
                 else
