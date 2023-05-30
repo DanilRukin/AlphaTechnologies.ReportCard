@@ -11,6 +11,7 @@
     <Folder Include="DepartmentAgregate\Commands\" />
     <Folder Include="EmployeeAgregate\Commands\" />
     <Folder Include="PositionEntity\Commands\" />
+    <Folder Include="ProductionCalendarEntity\Commands\" />
     <Folder Include="WorkStatusEntity\Commands\" />
   </ItemGroup>
 
