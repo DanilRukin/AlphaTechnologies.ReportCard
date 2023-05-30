@@ -1,4 +1,5 @@
 ﻿using AlphaTechnologies.ReportCard.Application.ComingsEntity.Queries;
+using AlphaTechnologies.ReportCard.Application.ProductionCalendarEntity.Queries;
 using AlphaTechnologies.ReportCard.Application.WorkStatusEntity.Queries;
 using AlphaTechnologies.ReportCard.Presentation.WPF.ViewModels.Base;
 using MediatR;
@@ -31,7 +32,13 @@ namespace AlphaTechnologies.ReportCard.Presentation.WPF.ViewModels.DataViewModel
                 if (workStatusResult.IsSuccess)
                 {
                     result.WorkStatus = WorkStatusEnum.Unknown.FromCode(workStatusResult.Value.Code);
-                    // TODO: set the color using ProductionCalendar
+                    IsDateHolidayQuery isDateHolidayQuery = new(comingResponse.Value.Date);
+                    var isDateHolidayResponse = await mediator.Send(isDateHolidayQuery);
+                    if (isDateHolidayResponse.IsSuccess)
+                    {
+                        if (isDateHolidayResponse.Value == true)
+                            result.Color = Brushes.Red;
+                    }
                 }
                 return result;
             }
