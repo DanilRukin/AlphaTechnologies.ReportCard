@@ -17,6 +17,7 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using static System.Formats.Asn1.AsnWriter;
 
 namespace AlphaTechnologies.ReportCard.Presentation.WPF
 {
@@ -29,8 +30,6 @@ namespace AlphaTechnologies.ReportCard.Presentation.WPF
 
         public static Window ActivedWindow => Current.Windows.Cast<Window>().FirstOrDefault(w => w.IsActive);
 
-        private static string _migrationAssembly = "AlphaTechnologies.ReportCard.Data.MySql";
-
         private static IServiceProvider? _services;
         public static IServiceProvider? Services => _services ??= Host.Services;
 
@@ -40,23 +39,29 @@ namespace AlphaTechnologies.ReportCard.Presentation.WPF
             .ConfigureServices(ConfigureServices)
             .Build();
 
+        private static DatabaseProfile _profile;
+
         private static void ConfigureServices(HostBuilderContext context, IServiceCollection services)
         {
             DatabaseProfileFactory factory = new DatabaseProfileFactory();
-            DatabaseProfile profile = factory.CreateFromConfiguration(context.Configuration);
+            _profile = factory.CreateFromConfiguration(context.Configuration);
             services.AddMediatR(conf =>
             {
                 conf.RegisterServicesFromAssembly(typeof(App).Assembly);
             })
            .AddApplicationModule()
            .AddScoped<IDomainEventDispatcher, DomainEventDispatcher>()
-           .AddDbContext<AlphaTechnologiesRepordCardDbContext>(options =>
-           {
-               profile.ConfigureDbContextOptionsBuilder(options);
-           });
+           .AddDbContext<AlphaTechnologiesRepordCardDbContext>(_profile.ConfigureDbContextOptionsBuilder);
 
             services.AddTransient<MainWindowViewModel>();
             services.AddTransient<ReportCardWindowViewModel>();
+
+            using (var scope = services.BuildServiceProvider().CreateScope())
+            {
+                var s = scope.ServiceProvider;
+                var c = s.GetRequiredService<AlphaTechnologiesRepordCardDbContext>();
+                _profile?.UseDbContext(c);
+            }
 
             services.AddTransient(
             s =>
@@ -66,9 +71,12 @@ namespace AlphaTechnologies.ReportCard.Presentation.WPF
                 var window = new ReportCardWindow { DataContext = model };
                 model.DialogComplete += (_, _) => window.Close();
                 window.Closed += (_, _) => scope.Dispose();
+                window.Loaded += (_, _) => model.LoadDepartments();
 
                 return window;
             });
+
+
         }           
 
         protected override async void OnStartup(StartupEventArgs e)
@@ -76,6 +84,17 @@ namespace AlphaTechnologies.ReportCard.Presentation.WPF
             var host = Host;
             base.OnStartup(e);
             await host.StartAsync();
+
+            //var context = Services.GetRequiredService<AlphaTechnologiesRepordCardDbContext>();
+            //_profile?.UseDbContext(context);
+
+            //using (var scope = Services.CreateScope())
+            //{
+            //    var services = scope.ServiceProvider;
+            //    var context = services.GetRequiredService<AlphaTechnologiesRepordCardDbContext>();
+            //    _profile?.UseDbContext(context);
+            //}
+
             var window = Services.GetRequiredService<ReportCardWindow>();
             window.Show();
         }

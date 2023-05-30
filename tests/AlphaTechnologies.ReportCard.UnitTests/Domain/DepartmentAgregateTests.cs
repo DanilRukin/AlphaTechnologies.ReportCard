@@ -52,7 +52,7 @@ namespace AlphaTechnologies.ReportCard.UnitTests.Domain
             department.RemoveEmployee(employee);
 
             Assert.Empty(department.Employees);
-            Assert.True(employee.DepartmentId == 0);
+            Assert.True(employee.DepartmentId == null);
         }
 
         [Fact]
@@ -60,8 +60,25 @@ namespace AlphaTechnologies.ReportCard.UnitTests.Domain
         {
             Department department = GetNextDefaultDepartment();
             Employee employee = GetNextDefaultEmployee();
-            string message = $"Unable to remove department with id: {department.Id} because of this employee (id: {employee.Id}) works in department with id" +
+
+            department.AddEmployee(employee);
+
+            Department department2 = GetNextDefaultDepartment();
+            string message = $"Unable to remove department with id: {department2.Id} because of this employee (id: {employee.Id}) works in department with id" +
                     $"{employee.DepartmentId}";
+           
+            InvalidOperationException exc = Assert.Throws<InvalidOperationException>(() => department2.RemoveEmployee(employee));
+            Assert.NotNull(exc);
+            Assert.Equal(message, exc.Message);
+        }
+
+        [Fact]
+        public void RemoveEmployee_EmployeeWasNotAddedToDepartmentBefore_ThrowsExceptionWithMessage()
+        {
+            Department department = GetNextDefaultDepartment();
+            Employee employee = GetNextDefaultEmployee();
+
+            string message = $"Employee (id: '{employee.Id}') is not working on any department";
 
             InvalidOperationException exc = Assert.Throws<InvalidOperationException>(() => department.RemoveEmployee(employee));
             Assert.NotNull(exc);

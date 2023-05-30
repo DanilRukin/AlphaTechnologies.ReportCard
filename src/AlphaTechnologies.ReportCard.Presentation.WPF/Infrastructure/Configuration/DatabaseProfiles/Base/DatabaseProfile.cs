@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AlphaTechnologies.ReportCard.Data;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -16,19 +17,37 @@ namespace AlphaTechnologies.ReportCard.Presentation.WPF.Infrastructure.Configura
         public bool MigrateDatabase { get; protected set; }
         public bool CreateDatabase { get; protected set; }
 
-        protected DatabaseProfile(IConfiguration configuration)
+        protected DatabaseProfile(string name, string connectionString, bool useSeedData,
+            bool migrateDatabase, bool createDatabase) 
         {
-            string profileName = configuration["UseProfile"];
-            Name = profileName;
-            var section = configuration.GetSection("Profiles");
-            var profile = section.GetSection(Name);
-            ConnectionString = profile[nameof(ConnectionString)];
-            UseSeedData = FromString(profile[nameof(UseSeedData)]);
-            MigrateDatabase = FromString(profile[nameof(MigrateDatabase)]);
-            CreateDatabase = FromString(profile[nameof(CreateDatabase)]);
+            Name = name;
+            ConnectionString = connectionString;
+            UseSeedData = useSeedData;
+            MigrateDatabase = migrateDatabase;
+            CreateDatabase = createDatabase;
         }
 
-        protected bool FromString(string value) => value == "true" ? true : false;
+        protected DatabaseProfile(IConfiguration configuration)
+        {
+            
+        }
+
+        
         public abstract void ConfigureDbContextOptionsBuilder(DbContextOptionsBuilder builder);
+
+        public virtual void UseDbContext(AlphaTechnologiesRepordCardDbContext context)
+        {
+            if (UseSeedData)
+            {
+                if (MigrateDatabase)
+                {
+                    SeedData.ApplyMigrationAndFillDatabase(context);
+                }
+                else if (CreateDatabase)
+                {
+                    SeedData.InitializeDatabase(context);
+                }
+            }
+        }
     }
 }

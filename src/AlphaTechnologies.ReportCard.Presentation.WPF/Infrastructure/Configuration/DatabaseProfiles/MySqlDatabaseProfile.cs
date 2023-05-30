@@ -13,12 +13,14 @@ namespace AlphaTechnologies.ReportCard.Presentation.WPF.Infrastructure.Configura
     public class MySqlDatabaseProfile : DatabaseProfile
     {
         public string MigrationAssembly { get; protected set; }
-        public MySqlDatabaseProfile(IConfiguration configuration) : base(configuration)
+
+        public MySqlDatabaseProfile(string name, string connectionString, bool useSeedData,
+            bool migrateDatabase, bool createDatabase, string migrationAssembly)
+            : base(name, connectionString, useSeedData, migrateDatabase, createDatabase)
         {
-            var section = configuration.GetSection("Profiles");
-            var profile = section.GetSection(Name);
-            MigrationAssembly = profile[nameof(MigrationAssembly)];
+            MigrationAssembly = migrationAssembly;
         }
+
         public override void ConfigureDbContextOptionsBuilder(DbContextOptionsBuilder builder)
         {
             builder.UseMySQL(ConnectionString, sql => sql.MigrationsAssembly(MigrationAssembly));

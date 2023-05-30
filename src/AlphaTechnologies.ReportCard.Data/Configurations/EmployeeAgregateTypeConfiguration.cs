@@ -20,6 +20,8 @@ namespace AlphaTechnologies.ReportCard.Data.Configurations
             builder.HasKey(e => e.Id);
             builder.Property(e => e.Id).ValueGeneratedOnAdd();
 
+            builder.Property(e => e.DepartmentId).IsRequired(false);
+
             builder.OwnsOne(e => e.PersonalData, pd =>
             {
                 pd.Property(p => p.FirstName).HasColumnName(nameof(PersonalData.FirstName));

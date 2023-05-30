@@ -15,7 +15,7 @@ namespace AlphaTechnologies.ReportCard.Domain.EmployeeAgregate
 {
     public class Employee : EntityBase<int>, IAgregateRoot
     {
-        public int DepartmentId { get; protected set; }
+        public int? DepartmentId { get; protected set; }
         public PersonalData PersonalData { get; protected set; }
         public DateOnly Birthday { get; protected set; }
         public ServiceNumber ServiceNumber { get; protected set; }
@@ -111,17 +111,19 @@ namespace AlphaTechnologies.ReportCard.Domain.EmployeeAgregate
 
         internal void AddDepartment(Department department)
         {
-            if (DepartmentId == department.Id)
-                throw new InvalidOperationException($"This employee (id: {Id}) is already works in department with id: {department.Id}");
+            if (DepartmentId != null || DepartmentId == department.Id)
+                throw new InvalidOperationException($"This employee (id: {Id}) is already works in department with id: {DepartmentId}");
             DepartmentId = department.Id;
         }
 
         internal void RemoveDepartment(Department department)
         {
+            if (DepartmentId == null)
+                throw new InvalidOperationException($"Employee (id: '{Id}') is not working on any department");
             if (DepartmentId != department.Id)
                 throw new InvalidOperationException($"Unable to remove department with id: {department.Id} because of this employee (id: {Id}) works in department with id" +
                     $"{DepartmentId}");
-            DepartmentId = 0;
+            DepartmentId = null;
         }
 
         public Coming CheckIn(DateOnly date, WorkStatus status)

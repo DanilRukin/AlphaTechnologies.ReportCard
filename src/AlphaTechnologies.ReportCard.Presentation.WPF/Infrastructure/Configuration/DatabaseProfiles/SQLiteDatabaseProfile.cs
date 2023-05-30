@@ -14,12 +14,18 @@ namespace AlphaTechnologies.ReportCard.Presentation.WPF.Infrastructure.Configura
 {
     public class SQLiteDatabaseProfile : DatabaseProfile
     {
-        public SQLiteDatabaseProfile(IConfiguration configuration) : base(configuration) { }
+        private SqliteConnection _connection;
+        public SQLiteDatabaseProfile(string name, string connectionString, bool useSeedData,
+            bool migrateDatabase, bool createDatabase) :
+            base(name, connectionString, useSeedData, migrateDatabase, createDatabase)
+        {
+        }
+
         public override void ConfigureDbContextOptionsBuilder(DbContextOptionsBuilder builder)
         {
-            var connection = new SqliteConnection(ConnectionString);
-            connection.Open();
-            builder.UseSqlite(connection);
+            _connection = new SqliteConnection(ConnectionString);
+            _connection.Open();
+            builder.UseSqlite(_connection);
         }
     }
 }

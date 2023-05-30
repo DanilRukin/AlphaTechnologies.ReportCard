@@ -7,13 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Models\Services\**" />
-    <EmbeddedResource Remove="Models\Services\**" />
-    <None Remove="Models\Services\**" />
-    <Page Remove="Models\Services\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.5">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -24,10 +17,6 @@
   <ItemGroup>
     <ProjectReference Include="..\AlphaTechnologies.ReportCard.Application\AlphaTechnologies.ReportCard.Application.csproj" />
     <ProjectReference Include="..\AlphaTechnologies.ReportCard.Data.MySql\AlphaTechnologies.ReportCard.Data.MySql.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Models\" />
   </ItemGroup>
 
   <ItemGroup>

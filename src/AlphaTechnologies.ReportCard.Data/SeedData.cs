@@ -140,9 +140,9 @@ namespace AlphaTechnologies.ReportCard.Data
 
                
                 WorkStatuses = new List<WorkStatus>();
-                foreach (var name in Enum.GetNames<WorkStatusEnum>())
+                foreach (var value in Enum.GetValues<WorkStatusEnum>())
                 {
-                    WorkStatuses.Add(new WorkStatus(name));
+                    WorkStatuses.Add(new WorkStatus(value.GetCode()));
                 }
                 context.WorkStatuses.AddRange(WorkStatuses);
                 context.SaveChanges();
@@ -163,15 +163,15 @@ namespace AlphaTechnologies.ReportCard.Data
                 int maxCode = (int)values[0];
                 for (int i = 1; i < 32; i++)
                 {
-                    workStatus = WorkStatuses.First(w => w.Code == ((WorkStatusEnum)random.Next(1, 11)).GetCode());
+                    workStatus = WorkStatuses[random.Next(0, WorkStatuses.Count)];
                     coming = Employee1_WorksOnDepartment1.CheckIn(new DateOnly(JanuaryProductionCalendar.Year, JanuaryProductionCalendar.Month, i), workStatus);
                     Employee1_JanuaryComings.Add(coming);
 
-                    workStatus = WorkStatuses.First(w => w.Code == ((WorkStatusEnum)random.Next(1, 11)).GetCode());
+                    workStatus = WorkStatuses[random.Next(0, WorkStatuses.Count)];
                     coming = Employee2_WorksOnDepartment1.CheckIn(new DateOnly(JanuaryProductionCalendar.Year, JanuaryProductionCalendar.Month, i), workStatus);
                     Employee2_JanuaryComings.Add(coming);
 
-                    workStatus = WorkStatuses.First(w => w.Code == ((WorkStatusEnum)random.Next(1, 11)).GetCode());
+                    workStatus = WorkStatuses[random.Next(0, WorkStatuses.Count)];
                     coming = Employee3_WorksOnDepartment2.CheckIn(new DateOnly(JanuaryProductionCalendar.Year, JanuaryProductionCalendar.Month, i), workStatus);
                     Employee3_JanuaryComings.Add(coming);
                 }
@@ -239,7 +239,6 @@ namespace AlphaTechnologies.ReportCard.Data
 
         internal enum WorkStatusEnum
         {
-            Unknown = 0,
             /// <summary>
             /// Полный день (Я)
             /// </summary>
@@ -300,7 +299,6 @@ namespace AlphaTechnologies.ReportCard.Data
                 WorkStatusEnum.BusinessDay => "Хд",
                 WorkStatusEnum.LeaveForThePeriodOfStudy => "У",
                 WorkStatusEnum.ParentalLeave => "Ож",
-                WorkStatusEnum.Unknown => "",
                 _ => throw new ArgumentException($"Cannot convert value '{workStatusEnum}'" +
                     $" to correct code"),
             };
@@ -308,7 +306,6 @@ namespace AlphaTechnologies.ReportCard.Data
         internal static WorkStatusEnum FromCode(this WorkStatusEnum workStatusEnum, string code) =>
             code switch
             {
-                "" => WorkStatusEnum.Unknown,
                 "Я" => WorkStatusEnum.FullDay,
                 "Н" => WorkStatusEnum.NotOnWork,
                 "В" => WorkStatusEnum.Holiday,
