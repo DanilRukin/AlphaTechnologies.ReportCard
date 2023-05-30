@@ -15,12 +15,19 @@ namespace AlphaTechnologies.ReportCard.Presentation.WPF.ViewModels.DataViewModel
 {
     public class EmployeeWorkStatusMounthViewModel : ViewModel
     {
-        public EmployeeWorkStatusMounthViewModel(string fio, string serviceNumber, string position)
+        public EmployeeWorkStatusMounthViewModel(string fio, string serviceNumber, string position, int year = 0, int month = 0)
         {
             FIO = fio;
             ServiceNumber = serviceNumber;
             Position = position;
+            Year = year;
+            Month = month;
         }
+        private int _year = 0;
+        public int Year { get => _year; set => Set(ref _year, value); }
+
+        private int _month = 0;
+        public int Month { get => _month; set => Set(ref _month, value); }
         public string FIO { get; protected set; }
 
         public string ServiceNumber { get; protected set; }
@@ -122,7 +129,7 @@ namespace AlphaTechnologies.ReportCard.Presentation.WPF.ViewModels.DataViewModel
 
         public string Result { get; protected set; }
 
-        public static async Task<EmployeeWorkStatusMounthViewModel> Load(int employeeId, IMediator mediator)
+        public static async Task<EmployeeWorkStatusMounthViewModel> Load(int employeeId, int year, int month, IMediator mediator)
         {
             GetEmployeeByIdQuery employeeQuery = new(new EmployeeIncludeOptions(employeeId, true, true));
             var employeeResponse = await mediator.Send(employeeQuery);
