@@ -1,7 +1,12 @@
-﻿using AlphaTechnologies.ReportCard.Application.DepartmentAgregate.Queries;
+﻿using AlphaTechnologies.ReportCard.Application.ComingsEntity.Queries;
+using AlphaTechnologies.ReportCard.Application.DepartmentAgregate.Queries;
+using AlphaTechnologies.ReportCard.Application.EmployeeAgregate;
+using AlphaTechnologies.ReportCard.Application.EmployeeAgregate.Queries;
+using AlphaTechnologies.ReportCard.Application.PositionEntity.Queries;
 using AlphaTechnologies.ReportCard.Presentation.WPF.Models.Services;
 using AlphaTechnologies.ReportCard.Presentation.WPF.ViewModels.Base;
 using AlphaTechnologies.ReportCard.Presentation.WPF.ViewModels.DataViewModels;
+using AlphaTechnologies.ReportCard.SharedKernel.Results;
 using MediatR;
 using SQLitePCL;
 using System;
@@ -34,7 +39,9 @@ namespace AlphaTechnologies.ReportCard.Presentation.WPF.ViewModels
 
         public ObservableCollection<DepartmentViewModel> Departments { get; set; } =
             new ObservableCollection<DepartmentViewModel>();
-        public DepartmentViewModel SelectedDepartment { get; set; } = new DepartmentViewModel("");
+
+        private DepartmentViewModel _selectedDepartment = new DepartmentViewModel("");
+        public DepartmentViewModel SelectedDepartment { get => _selectedDepartment; set => Set(ref _selectedDepartment, value); }
 
         public ObservableCollection<EmployeeWorkStatusMounthViewModel> January { get; set; } =
             new ObservableCollection<EmployeeWorkStatusMounthViewModel>();
@@ -58,33 +65,88 @@ namespace AlphaTechnologies.ReportCard.Presentation.WPF.ViewModels
 
         #region Commands
 
-        
+
 
         #endregion
 
         #region Methods
 
-
-
-        #endregion
-
         public async Task LoadDepartments()
         {
             Departments.Clear();
             GetAllDepartmentsQuery query = new(true);
+            GetRangeOfEmployeesQuery employeesQuery;
+            GetRangeOfComingsQuery comingsQuery;
+            GetRangeOfPositionsQuery positionsQuery;
+            List<EmployeeIncludeOptions> employeeIncludeOptions = new List<EmployeeIncludeOptions>();
+            DepartmentViewModel departmentViewModel;
+            EmployeeWorkStatusMounthViewModel employeeWorkStatusMounthViewModel;
             var response = await _mediator.Send(query);
             if (response.IsSuccess)
             {
                 foreach (var department in response.Value)
                 {
-                    Departments.Add(new DepartmentViewModel(department.Name));
-                    // TODO: сделать заполнение посещений работников по месяцам
+                    departmentViewModel = new DepartmentViewModel(department.Name);
+                    employeeIncludeOptions.Clear();
+                    foreach (var id in department.EmployeesIds)
+                    {
+                        employeeIncludeOptions.Add(new EmployeeIncludeOptions(id, true, true));
+                    }
+                    employeesQuery = new(employeeIncludeOptions);
+                    Result<IEnumerable<EmployeeDto>> employeesResponse = await _mediator.Send(employeesQuery);
+                    if (employeesResponse.IsSuccess)
+                    {
+                        foreach (var employee in employeesResponse.Value)
+                        {
+                            positionsQuery = new(employee.PositionsIds.Select(id => new PositionIncludeOptions(id, false)));
+                            var positionsResponse = await _mediator.Send(positionsQuery);
+
+                            comingsQuery = new(employee.ComingDaysIds);
+                            var comingsResponse = await _mediator.Send(comingsQuery);
+                            if (comingsResponse.IsSuccess)
+                            {
+                                foreach (var coming in comingsResponse.Value)
+                                {
+                                    employeeWorkStatusMounthViewModel = new EmployeeWorkStatusMounthViewModel(
+                                            $"{employee.FirstName} {employee.LastName} {employee.Patronymic}",
+                                            employee.ServiceNumber,
+                                            positionsResponse.Value.FirstOrDefault() == default ? "" : positionsResponse.Value.First().Name);
+                                    // employeeWorkStatusMounthViewModel.Day_1 = new DayViewModel() {WorkStatus = coming. }; TODO: сделать загрузку WorkStatus
+                                    switch (coming.Date.Month)
+                                    {
+                                        case 1: departmentViewModel.JanuaryEmployees.Add(employeeWorkStatusMounthViewModel); break;  // January
+                                        case 2: departmentViewModel.FebruaryEmployees.Add(employeeWorkStatusMounthViewModel); break;  // February
+                                        case 3: departmentViewModel.MarchEmployees.Add(employeeWorkStatusMounthViewModel); break;  // March
+                                        case 4: departmentViewModel.AprilEmployees.Add(employeeWorkStatusMounthViewModel); break;  // April
+                                        case 5: departmentViewModel.MayEmployees.Add(employeeWorkStatusMounthViewModel); break;  // May
+                                        case 6: departmentViewModel.JuneEmployees.Add(employeeWorkStatusMounthViewModel); break;  // June
+                                        case 7: departmentViewModel.JulyEmployees.Add(employeeWorkStatusMounthViewModel); break;  // July
+                                        case 8: departmentViewModel.AugustEmployees.Add(employeeWorkStatusMounthViewModel); break;  // August
+                                        case 9: departmentViewModel.SeptemberEmployees.Add(employeeWorkStatusMounthViewModel); break;  // September
+                                        case 10: departmentViewModel.OctoberEmployees.Add(employeeWorkStatusMounthViewModel); break;  // October
+                                        case 11: departmentViewModel.NovemberEmployees.Add(employeeWorkStatusMounthViewModel); break;  // November
+                                        case 12: departmentViewModel.DecemberEmployees.Add(employeeWorkStatusMounthViewModel); break;  // December
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                ResultErrorHandler.Handle(comingsResponse);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        ResultErrorHandler.Handle(employeesResponse);
+                    }
+                    Departments.Add(departmentViewModel);
                 }
             }
             else
             {
                 ResultErrorHandler.Handle(response);
             }
+            SelectedDepartment = Departments.First();
         }
 
         private void FillJanuaryEmployeeTableWithTestData()
@@ -97,5 +159,7 @@ namespace AlphaTechnologies.ReportCard.Presentation.WPF.ViewModels
                     Guid.NewGuid().ToString(), $"position_{i}"));
             }
         }
+
+        #endregion
     }
 }

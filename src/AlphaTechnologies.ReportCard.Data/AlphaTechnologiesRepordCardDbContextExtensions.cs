@@ -1,5 +1,6 @@
 ﻿using AlphaTechnologies.ReportCard.Domain.DepartmentAgregate;
 using AlphaTechnologies.ReportCard.Domain.EmployeeAgregate;
+using AlphaTechnologies.ReportCard.Domain.PositionEntity;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -25,6 +26,11 @@ namespace AlphaTechnologies.ReportCard.Data
         public static IQueryable<Employee> IncludeComings(this IQueryable<Employee> employees)
         {
             return employees.Include(DataConstants.EMPLOYEE_COMINGS);
+        }
+
+        public static IQueryable<Position> IncludeEmployees(this IQueryable<Position> positions)
+        {
+            return positions.Include(DataConstants.POSITIONS_EMPLOYEES);
         }
     }
 }

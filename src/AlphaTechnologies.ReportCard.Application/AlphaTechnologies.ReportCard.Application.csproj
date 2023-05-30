@@ -7,8 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Folder Include="ComingsEntity\Commands\" />
     <Folder Include="DepartmentAgregate\Commands\" />
     <Folder Include="EmployeeAgregate\Commands\" />
+    <Folder Include="PositionEntity\Commands\" />
   </ItemGroup>
 
   <ItemGroup>
