@@ -31,6 +31,11 @@ namespace AlphaTechnologies.ReportCard.Presentation.WPF.Infrastructure.Configura
                 return new SQLiteDatabaseProfile(profileName, connectionString, useSeedData,
                     migrateDatabase, createDatabase);
             }
+            else if (profileName == "InMemoryProfile")
+            {
+                return new InMemoryDatabaseProfile(profileName, connectionString, useSeedData,
+                    migrateDatabase, createDatabase);
+            }
             else
             {
                 throw new InvalidOperationException($"Unable to create '{profileName}'" +

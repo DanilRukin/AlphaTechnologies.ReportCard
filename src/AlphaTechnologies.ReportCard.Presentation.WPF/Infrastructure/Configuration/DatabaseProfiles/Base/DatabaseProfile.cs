@@ -26,12 +26,6 @@ namespace AlphaTechnologies.ReportCard.Presentation.WPF.Infrastructure.Configura
             MigrateDatabase = migrateDatabase;
             CreateDatabase = createDatabase;
         }
-
-        protected DatabaseProfile(IConfiguration configuration)
-        {
-            
-        }
-
         
         public abstract void ConfigureDbContextOptionsBuilder(DbContextOptionsBuilder builder);
 

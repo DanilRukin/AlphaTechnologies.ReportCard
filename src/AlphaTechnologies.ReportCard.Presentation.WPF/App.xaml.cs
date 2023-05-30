@@ -10,6 +10,8 @@ using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -17,7 +19,6 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using static System.Formats.Asn1.AsnWriter;
 
 namespace AlphaTechnologies.ReportCard.Presentation.WPF
 {
@@ -30,39 +31,44 @@ namespace AlphaTechnologies.ReportCard.Presentation.WPF
 
         public static Window ActivedWindow => Current.Windows.Cast<Window>().FirstOrDefault(w => w.IsActive);
 
-        private static IServiceProvider? _services;
-        public static IServiceProvider? Services => _services ??= Host.Services;
+        private IHost _host;
+        private DatabaseProfile _profile;
 
-        private static IHost _host;
-        public static IHost Host => _host ??= Microsoft.Extensions.Hosting.Host
-            .CreateDefaultBuilder(Environment.GetCommandLineArgs())
-            .ConfigureServices(ConfigureServices)
-            .Build();
+        public App()
+        {
+            _host = Host.CreateDefaultBuilder(Environment.GetCommandLineArgs())
+                .ConfigureLogging((context, logging) =>
+                {
+                    Log.Logger = new LoggerConfiguration()
+                    .ReadFrom
+                    .Configuration(context.Configuration)
+                    .CreateLogger();
+                    //logging.AddSerilog();
+                })
+                .ConfigureServices(ConfigureServices)
+                .UseSerilog()
+                .Build();
 
-        private static DatabaseProfile _profile;
+            //using (var scope = _host.Services.CreateScope())
+            //{
+            //    var services = scope.ServiceProvider;
+            //    var context = services.GetRequiredService<AlphaTechnologiesRepordCardDbContext>();
+            //    _profile?.UseDbContext(context);
+            //}
+        }
 
-        private static void ConfigureServices(HostBuilderContext context, IServiceCollection services)
+        private void ConfigureServices(HostBuilderContext context, IServiceCollection services)
         {
             DatabaseProfileFactory factory = new DatabaseProfileFactory();
             _profile = factory.CreateFromConfiguration(context.Configuration);
-            services.AddMediatR(conf =>
-            {
-                conf.RegisterServicesFromAssembly(typeof(App).Assembly);
-            })
-           .AddApplicationModule()
-           .AddScoped<IDomainEventDispatcher, DomainEventDispatcher>()
-           .AddDbContext<AlphaTechnologiesRepordCardDbContext>(_profile.ConfigureDbContextOptionsBuilder);
+            services.AddApplicationModule()
+                .AddScoped<IDomainEventDispatcher, DomainEventDispatcher>()
+                .AddDbContext<AlphaTechnologiesRepordCardDbContext>(_profile.ConfigureDbContextOptionsBuilder);
+
+            services.AddSingleton(LoggerFactory.Create(logging => logging.AddSerilog()).CreateLogger("Logger"));
 
             services.AddTransient<MainWindowViewModel>();
             services.AddTransient<ReportCardWindowViewModel>();
-
-            using (var scope = services.BuildServiceProvider().CreateScope())
-            {
-                var s = scope.ServiceProvider;
-                var c = s.GetRequiredService<AlphaTechnologiesRepordCardDbContext>();
-                _profile?.UseDbContext(c);
-            }
-
             services.AddTransient(
             s =>
             {
@@ -75,27 +81,24 @@ namespace AlphaTechnologies.ReportCard.Presentation.WPF
 
                 return window;
             });
-
-
         }           
 
         protected override async void OnStartup(StartupEventArgs e)
         {
-            var host = Host;
             base.OnStartup(e);
-            await host.StartAsync();
+            await _host.StartAsync();
 
-            //var context = Services.GetRequiredService<AlphaTechnologiesRepordCardDbContext>();
+            //var context = _host.Services.GetRequiredService<AlphaTechnologiesRepordCardDbContext>();
             //_profile?.UseDbContext(context);
 
-            //using (var scope = Services.CreateScope())
-            //{
-            //    var services = scope.ServiceProvider;
-            //    var context = services.GetRequiredService<AlphaTechnologiesRepordCardDbContext>();
-            //    _profile?.UseDbContext(context);
-            //}
+            using (var scope = _host.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                var context = services.GetRequiredService<AlphaTechnologiesRepordCardDbContext>();
+                _profile?.UseDbContext(context);
+            }
 
-            var window = Services.GetRequiredService<ReportCardWindow>();
+            var window = _host.Services.GetRequiredService<ReportCardWindow>();
             window.Show();
         }
 
@@ -103,7 +106,7 @@ namespace AlphaTechnologies.ReportCard.Presentation.WPF
         {
             base.OnExit(e);
 
-            using (Host) await Host.StopAsync();
+            using (_host) await _host.StopAsync();
         }
 
 
