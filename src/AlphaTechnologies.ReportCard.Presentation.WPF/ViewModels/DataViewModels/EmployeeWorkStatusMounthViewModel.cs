@@ -1,7 +1,12 @@
-﻿using AlphaTechnologies.ReportCard.Presentation.WPF.ViewModels.Base;
+﻿using AlphaTechnologies.ReportCard.Application.EmployeeAgregate.Queries;
+using AlphaTechnologies.ReportCard.Application.PositionEntity.Queries;
+using AlphaTechnologies.ReportCard.Presentation.WPF.ViewModels.Base;
+using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Security.RightsManagement;
 using System.Text;
 using System.Threading.Tasks;
@@ -117,9 +122,44 @@ namespace AlphaTechnologies.ReportCard.Presentation.WPF.ViewModels.DataViewModel
 
         public string Result { get; protected set; }
 
-        public static EmployeeWorkStatusMounthViewModel Load()
+        public static async Task<EmployeeWorkStatusMounthViewModel> Load(int employeeId, IMediator mediator)
         {
-
+            GetEmployeeByIdQuery employeeQuery = new(new EmployeeIncludeOptions(employeeId, true, true));
+            var employeeResponse = await mediator.Send(employeeQuery);
+            if (employeeResponse.IsSuccess)
+            {
+                var employee = employeeResponse.Value;
+                GetPositionByIdQuery positionQuery = new(new PositionIncludeOptions(employee.PositionsIds.First(), false));
+                var positionResponse = await mediator.Send(positionQuery);
+                if (positionResponse.IsSuccess)
+                {
+                    var position = positionResponse.Value;
+                    EmployeeWorkStatusMounthViewModel result = new($"{employee.FirstName} {employee.LastName} {employee.Patronymic}",
+                        employee.ServiceNumber, position.Name);
+                    PropertyInfo[] properties = typeof(EmployeeWorkStatusMounthViewModel).GetProperties();
+                    PropertyInfo? propertyToSetValue;
+                    DayViewModel dayViewModel;
+                    foreach (var comingDayId in employee.ComingDaysIds)
+                    {
+                        dayViewModel = await DayViewModel.Load(comingDayId, mediator);
+                        propertyToSetValue = properties.FirstOrDefault(p => p.Name == $"Day_{dayViewModel.Date.Day}");
+                        if (propertyToSetValue != null)
+                        {
+                            propertyToSetValue.SetValue(result, dayViewModel);
+                        }
+                    }
+                    return result;
+                }
+                else
+                {
+                    return new($"{employee.FirstName} {employee.LastName} {employee.Patronymic}",
+                        employee.ServiceNumber, "");
+                }
+            }
+            else
+            {
+                return new EmployeeWorkStatusMounthViewModel("", "", "");
+            }
         }
     }
 }

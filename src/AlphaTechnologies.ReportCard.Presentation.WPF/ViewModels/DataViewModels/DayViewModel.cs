@@ -14,6 +14,9 @@ namespace AlphaTechnologies.ReportCard.Presentation.WPF.ViewModels.DataViewModel
 {
     public class DayViewModel : ViewModel
     {
+        private DateOnly _date = DateOnly.FromDateTime(DateTime.Now);
+        public DateOnly Date { get => _date; set => Set(ref _date, value); }
+
         private WorkStatusEnum _workStatus = WorkStatusEnum.FullDay;
         public WorkStatusEnum WorkStatus { get => _workStatus; set => Set(ref _workStatus, value); }
         
@@ -27,11 +30,12 @@ namespace AlphaTechnologies.ReportCard.Presentation.WPF.ViewModels.DataViewModel
             if (comingResponse.IsSuccess)
             {
                 DayViewModel result = new DayViewModel();
+                result.Date = comingResponse.Value.Date;
                 GetWorkStatusByIdQuery workStatusQuery = new(new WorkStatusIncludeOptions(comingResponse.Value.WorkStatusId, false));
                 var workStatusResult = await mediator.Send(workStatusQuery);
                 if (workStatusResult.IsSuccess)
                 {
-                    result.WorkStatus = WorkStatusEnum.Unknown.FromCode(workStatusResult.Value.Code);
+                    result.WorkStatus = WorkStatusEnum.Unknown.FromCode(workStatusResult.Value.Code);                   
                     IsDateHolidayQuery isDateHolidayQuery = new(comingResponse.Value.Date);
                     var isDateHolidayResponse = await mediator.Send(isDateHolidayQuery);
                     if (isDateHolidayResponse.IsSuccess)
