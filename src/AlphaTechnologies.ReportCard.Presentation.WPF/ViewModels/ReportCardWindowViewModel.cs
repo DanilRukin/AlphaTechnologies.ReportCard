@@ -74,77 +74,14 @@ namespace AlphaTechnologies.ReportCard.Presentation.WPF.ViewModels
         public async Task LoadDepartments()
         {
             Departments.Clear();
-            GetAllDepartmentsQuery query = new(true);
-            GetRangeOfEmployeesQuery employeesQuery;
-            GetRangeOfComingsQuery comingsQuery;
-            GetRangeOfPositionsQuery positionsQuery;
-            List<EmployeeIncludeOptions> employeeIncludeOptions = new List<EmployeeIncludeOptions>();
-            DepartmentViewModel departmentViewModel;
-            EmployeeWorkStatusMounthViewModel employeeWorkStatusMounthViewModel;
-            var response = await _mediator.Send(query);
-            if (response.IsSuccess)
+            GetAllDepartmentsQuery departmentsQuery = new(false);
+            var departmentsResponse = await _mediator.Send(departmentsQuery);
+            if (departmentsResponse.IsSuccess) 
             {
-                foreach (var department in response.Value)
+                foreach (var department in departmentsResponse.Value)
                 {
-                    departmentViewModel = new DepartmentViewModel(department.Name);
-                    employeeIncludeOptions.Clear();
-                    foreach (var id in department.EmployeesIds)
-                    {
-                        employeeIncludeOptions.Add(new EmployeeIncludeOptions(id, true, true));
-                    }
-                    employeesQuery = new(employeeIncludeOptions);
-                    Result<IEnumerable<EmployeeDto>> employeesResponse = await _mediator.Send(employeesQuery);
-                    if (employeesResponse.IsSuccess)
-                    {
-                        foreach (var employee in employeesResponse.Value)
-                        {
-                            positionsQuery = new(employee.PositionsIds.Select(id => new PositionIncludeOptions(id, false)));
-                            var positionsResponse = await _mediator.Send(positionsQuery);
-
-                            comingsQuery = new(employee.ComingDaysIds);
-                            var comingsResponse = await _mediator.Send(comingsQuery);
-                            if (comingsResponse.IsSuccess)
-                            {
-                                employeeWorkStatusMounthViewModel = new EmployeeWorkStatusMounthViewModel(
-                                            $"{employee.FirstName} {employee.LastName} {employee.Patronymic}",
-                                            employee.ServiceNumber,
-                                            positionsResponse.Value.FirstOrDefault() == default ? "" : positionsResponse.Value.First().Name);
-                                foreach (var coming in comingsResponse.Value)
-                                {                                   
-                                    // employeeWorkStatusMounthViewModel.Day_1 = new DayViewModel() {WorkStatus = coming. }; TODO: сделать загрузку WorkStatus
-                                    switch (coming.Date.Month)
-                                    {
-                                        case 1: departmentViewModel.JanuaryEmployees.Add(employeeWorkStatusMounthViewModel); break;  // January
-                                        case 2: departmentViewModel.FebruaryEmployees.Add(employeeWorkStatusMounthViewModel); break;  // February
-                                        case 3: departmentViewModel.MarchEmployees.Add(employeeWorkStatusMounthViewModel); break;  // March
-                                        case 4: departmentViewModel.AprilEmployees.Add(employeeWorkStatusMounthViewModel); break;  // April
-                                        case 5: departmentViewModel.MayEmployees.Add(employeeWorkStatusMounthViewModel); break;  // May
-                                        case 6: departmentViewModel.JuneEmployees.Add(employeeWorkStatusMounthViewModel); break;  // June
-                                        case 7: departmentViewModel.JulyEmployees.Add(employeeWorkStatusMounthViewModel); break;  // July
-                                        case 8: departmentViewModel.AugustEmployees.Add(employeeWorkStatusMounthViewModel); break;  // August
-                                        case 9: departmentViewModel.SeptemberEmployees.Add(employeeWorkStatusMounthViewModel); break;  // September
-                                        case 10: departmentViewModel.OctoberEmployees.Add(employeeWorkStatusMounthViewModel); break;  // October
-                                        case 11: departmentViewModel.NovemberEmployees.Add(employeeWorkStatusMounthViewModel); break;  // November
-                                        case 12: departmentViewModel.DecemberEmployees.Add(employeeWorkStatusMounthViewModel); break;  // December
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                ResultErrorHandler.Handle(comingsResponse);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        ResultErrorHandler.Handle(employeesResponse);
-                    }
-                    Departments.Add(departmentViewModel);
-                }
-            }
-            else
-            {
-                ResultErrorHandler.Handle(response);
+                    Departments.Add(await DepartmentViewModel.Load(department.Id, 2023, _mediator));
+                }               
             }
             SelectedDepartment = Departments.First();
         }

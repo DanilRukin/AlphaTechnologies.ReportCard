@@ -128,7 +128,50 @@ namespace AlphaTechnologies.ReportCard.Presentation.WPF.ViewModels.DataViewModel
         private DayViewModel _day_31 = new DayViewModel();
         public DayViewModel Day_31 { get => _day_31; set => Set(ref _day_31, value); }
 
-        public string Result { get; protected set; }
+        public string Result
+        {
+            get
+            {
+                int fullDayCount = 0, notOnWorkCount = 0, holidayCount = 0,
+                    workOnHolidayCount = 0, seekCount = 0, businessTripCount = 0,
+                    paidVacationCount = 0, unPaidVacationCount = 0,
+                    businessDayCount = 0, leaveForThePeriodOfStudyCount = 0,
+                    parentalLeaveCount = 0;
+                PropertyInfo[] properties = this.GetType().GetProperties();
+                foreach (var property in properties)
+                {
+                    if (property.Name.StartsWith("Day_"))
+                    {
+                        var workStatus = ((DayViewModel)property.GetValue(this)).WorkStatus;
+                        switch (workStatus)
+                        {
+                            case WorkStatusEnum.FullDay: fullDayCount++; break;
+                            case WorkStatusEnum.NotOnWork: notOnWorkCount++; break;
+                            case WorkStatusEnum.Holiday: holidayCount++; break;
+                            case WorkStatusEnum.WorkOnHoliday: workOnHolidayCount++; break;
+                            case WorkStatusEnum.Seek: seekCount++; break;
+                            case WorkStatusEnum.BusinessTrip: businessTripCount++; break;
+                            case WorkStatusEnum.PaidVacation: paidVacationCount++; break;
+                            case WorkStatusEnum.UnpaidVacation: unPaidVacationCount++; break;
+                            case WorkStatusEnum.BusinessDay: businessDayCount++; break;
+                            case WorkStatusEnum.LeaveForThePeriodOfStudy: leaveForThePeriodOfStudyCount++; break;
+                            case WorkStatusEnum.ParentalLeave: parentalLeaveCount++; break;
+                        }
+                    }
+                }
+                return $"{WorkStatusEnum.FullDay.GetCode()}({fullDayCount});" +
+                    $"{WorkStatusEnum.NotOnWork.GetCode()}({notOnWorkCount});" +
+                    $"{WorkStatusEnum.Holiday.GetCode()}({holidayCount});" +
+                    $"{WorkStatusEnum.WorkOnHoliday.GetCode()}({workOnHolidayCount});" +
+                    $"{WorkStatusEnum.Seek.GetCode()}({seekCount});" +
+                    $"{WorkStatusEnum.BusinessTrip.GetCode()}({businessTripCount});" +
+                    $"{WorkStatusEnum.PaidVacation.GetCode()}({paidVacationCount});" +
+                    $"{WorkStatusEnum.UnpaidVacation.GetCode()}({unPaidVacationCount});" +
+                    $"{WorkStatusEnum.BusinessDay.GetCode()}({businessDayCount});" +
+                    $"{WorkStatusEnum.LeaveForThePeriodOfStudy.GetCode()}({leaveForThePeriodOfStudyCount});" +
+                    $"{WorkStatusEnum.ParentalLeave.GetCode()}({parentalLeaveCount});";
+            }
+        }
 
         public static async Task<EmployeeWorkStatusMounthViewModel> Load(int employeeId, int year, int month, IMediator mediator)
         {

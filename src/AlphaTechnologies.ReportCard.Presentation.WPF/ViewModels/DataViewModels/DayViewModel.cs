@@ -17,7 +17,7 @@ namespace AlphaTechnologies.ReportCard.Presentation.WPF.ViewModels.DataViewModel
         private DateOnly _date = DateOnly.FromDateTime(DateTime.Now);
         public DateOnly Date { get => _date; set => Set(ref _date, value); }
 
-        private WorkStatusEnum _workStatus = WorkStatusEnum.FullDay;
+        private WorkStatusEnum _workStatus = WorkStatusEnum.Unknown;
         public WorkStatusEnum WorkStatus { get => _workStatus; set => Set(ref _workStatus, value); }
         
         private Brush _color = Brushes.Transparent;
