@@ -116,5 +116,10 @@ namespace AlphaTechnologies.ReportCard.Presentation.WPF.ViewModels.DataViewModel
         public DayViewModel Day_31 { get => _day_31; set => Set(ref _day_31, value); }
 
         public string Result { get; protected set; }
+
+        public static EmployeeWorkStatusMounthViewModel Load()
+        {
+
+        }
     }
 }

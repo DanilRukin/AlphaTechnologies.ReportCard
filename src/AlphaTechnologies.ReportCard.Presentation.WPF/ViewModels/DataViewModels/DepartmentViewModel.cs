@@ -58,5 +58,10 @@ namespace AlphaTechnologies.ReportCard.Presentation.WPF.ViewModels.DataViewModel
         {
             return Name;
         }
+
+        public static DepartmentViewModel Load()
+        {
+
+        }
     }
 }

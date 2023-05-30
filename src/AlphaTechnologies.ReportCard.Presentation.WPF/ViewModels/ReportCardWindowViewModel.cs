@@ -105,12 +105,12 @@ namespace AlphaTechnologies.ReportCard.Presentation.WPF.ViewModels
                             var comingsResponse = await _mediator.Send(comingsQuery);
                             if (comingsResponse.IsSuccess)
                             {
-                                foreach (var coming in comingsResponse.Value)
-                                {
-                                    employeeWorkStatusMounthViewModel = new EmployeeWorkStatusMounthViewModel(
+                                employeeWorkStatusMounthViewModel = new EmployeeWorkStatusMounthViewModel(
                                             $"{employee.FirstName} {employee.LastName} {employee.Patronymic}",
                                             employee.ServiceNumber,
                                             positionsResponse.Value.FirstOrDefault() == default ? "" : positionsResponse.Value.First().Name);
+                                foreach (var coming in comingsResponse.Value)
+                                {                                   
                                     // employeeWorkStatusMounthViewModel.Day_1 = new DayViewModel() {WorkStatus = coming. }; TODO: сделать загрузку WorkStatus
                                     switch (coming.Date.Month)
                                     {
@@ -151,7 +151,6 @@ namespace AlphaTechnologies.ReportCard.Presentation.WPF.ViewModels
 
         private void FillJanuaryEmployeeTableWithTestData()
         {
-            EmployeeWithComingsModel item;
             Random random = new Random();
             for (int i = 1; i < 6; i++)
             {

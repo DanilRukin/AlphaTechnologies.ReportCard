@@ -15,5 +15,10 @@ namespace AlphaTechnologies.ReportCard.Presentation.WPF.ViewModels.DataViewModel
         
         private Brush _color = Brushes.Transparent;
         public Brush Color { get => _color; set => Set(ref _color, value); }
+
+        public static DayViewModel Load()
+        {
+
+        }
     }
 }
