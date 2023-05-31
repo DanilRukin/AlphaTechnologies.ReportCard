@@ -3,6 +3,7 @@ using System;
 using AlphaTechnologies.ReportCard.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AlphaTechnologies.ReportCard.Data.MySql.Migrations.AlphaTechnologiesRepordCardDbContext
 {
     [DbContext(typeof(AlphaTechnologies.ReportCard.Data.AlphaTechnologiesRepordCardDbContext))]
-    partial class AlphaTechnologiesRepordCardDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230531042008_EditAlphaTechnologiesRepordCardDbContext")]
+    partial class EditAlphaTechnologiesRepordCardDbContext
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

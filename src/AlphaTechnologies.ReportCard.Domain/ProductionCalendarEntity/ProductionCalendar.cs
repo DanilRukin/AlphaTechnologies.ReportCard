@@ -28,6 +28,8 @@ namespace AlphaTechnologies.ReportCard.Domain.ProductionCalendarEntity
 
         private List<DateOnly> HolidayDatesFromString(string holidays)  // holidays = '1+,2*,12,13,20,21'
         {
+            if (string.IsNullOrWhiteSpace(holidays))
+                return new List<DateOnly>();
             List<DateOnly> result = new List<DateOnly>();
             string[] digits = holidays.Split(',', StringSplitOptions.RemoveEmptyEntries);
             for (int i = 0; i < digits.Length; i++)
@@ -68,7 +70,7 @@ namespace AlphaTechnologies.ReportCard.Domain.ProductionCalendarEntity
 
         public bool IsHoliday(DateOnly date)
         {
-            _holidaysDates ??= HolidayDatesFromString(_holidays);
+            _holidaysDates = HolidayDatesFromString(_holidays);
             return _holidaysDates.Contains(date);
         }
     }
