@@ -469,27 +469,7 @@
                                     </Style>
                                 </DataGridTextColumn.ElementStyle>
                             </DataGridTextColumn>
-                            <DataGridTextColumn Header="29" Binding="{Binding Day_29.WorkStatus, Converter={converters:WorkStatusToStringConverter}}">
-                                <DataGridTextColumn.ElementStyle>
-                                    <Style TargetType="TextBlock">
-                                        <Setter Property="TextBlock.Background" Value="{Binding Day_29.Color}"/>
-                                    </Style>
-                                </DataGridTextColumn.ElementStyle>
-                            </DataGridTextColumn>
-                            <DataGridTextColumn Header="30" Binding="{Binding Day_30.WorkStatus, Converter={converters:WorkStatusToStringConverter}}">
-                                <DataGridTextColumn.ElementStyle>
-                                    <Style TargetType="TextBlock">
-                                        <Setter Property="TextBlock.Background" Value="{Binding Day_30.Color}"/>
-                                    </Style>
-                                </DataGridTextColumn.ElementStyle>
-                            </DataGridTextColumn>
-                            <DataGridTextColumn Header="31" Binding="{Binding Day_31.WorkStatus, Converter={converters:WorkStatusToStringConverter}}">
-                                <DataGridTextColumn.ElementStyle>
-                                    <Style TargetType="TextBlock">
-                                        <Setter Property="TextBlock.Background" Value="{Binding Day_31.Color}"/>
-                                    </Style>
-                                </DataGridTextColumn.ElementStyle>
-                            </DataGridTextColumn>
+                            
 
                             <DataGridTextColumn Header="Итого" Binding="{Binding Result}" Width="*"/>
                         </DataGrid.Columns>
@@ -946,14 +926,7 @@
                                         </Style>
                                     </DataGridTextColumn.ElementStyle>
                                 </DataGridTextColumn>
-                                <DataGridTextColumn Header="31" Binding="{Binding Day_31.WorkStatus, Converter={converters:WorkStatusToStringConverter}}">
-                                    <DataGridTextColumn.ElementStyle>
-                                        <Style TargetType="TextBlock">
-                                            <Setter Property="TextBlock.Background" Value="{Binding Day_31.Color}"/>
-                                        </Style>
-                                    </DataGridTextColumn.ElementStyle>
-                                </DataGridTextColumn>
-
+                                
                                 <DataGridTextColumn Header="Итого" Binding="{Binding Result}" Width="*"/>
                             </DataGrid.Columns>
                         </DataGrid>
@@ -1407,13 +1380,6 @@
                                     <DataGridTextColumn.ElementStyle>
                                         <Style TargetType="TextBlock">
                                             <Setter Property="TextBlock.Background" Value="{Binding Day_30.Color}"/>
-                                        </Style>
-                                    </DataGridTextColumn.ElementStyle>
-                                </DataGridTextColumn>
-                                <DataGridTextColumn Header="31" Binding="{Binding Day_31.WorkStatus, Converter={converters:WorkStatusToStringConverter}}">
-                                    <DataGridTextColumn.ElementStyle>
-                                        <Style TargetType="TextBlock">
-                                            <Setter Property="TextBlock.Background" Value="{Binding Day_31.Color}"/>
                                         </Style>
                                     </DataGridTextColumn.ElementStyle>
                                 </DataGridTextColumn>
@@ -2106,13 +2072,6 @@
                                         </Style>
                                     </DataGridTextColumn.ElementStyle>
                                 </DataGridTextColumn>
-                                <DataGridTextColumn Header="31" Binding="{Binding Day_31.WorkStatus, Converter={converters:WorkStatusToStringConverter}}">
-                                    <DataGridTextColumn.ElementStyle>
-                                        <Style TargetType="TextBlock">
-                                            <Setter Property="TextBlock.Background" Value="{Binding Day_31.Color}"/>
-                                        </Style>
-                                    </DataGridTextColumn.ElementStyle>
-                                </DataGridTextColumn>
 
                                 <DataGridTextColumn Header="Итого" Binding="{Binding Result}" Width="*"/>
                             </DataGrid.Columns>
@@ -2567,13 +2526,6 @@
                                     <DataGridTextColumn.ElementStyle>
                                         <Style TargetType="TextBlock">
                                             <Setter Property="TextBlock.Background" Value="{Binding Day_30.Color}"/>
-                                        </Style>
-                                    </DataGridTextColumn.ElementStyle>
-                                </DataGridTextColumn>
-                                <DataGridTextColumn Header="31" Binding="{Binding Day_31.WorkStatus, Converter={converters:WorkStatusToStringConverter}}">
-                                    <DataGridTextColumn.ElementStyle>
-                                        <Style TargetType="TextBlock">
-                                            <Setter Property="TextBlock.Background" Value="{Binding Day_31.Color}"/>
                                         </Style>
                                     </DataGridTextColumn.ElementStyle>
                                 </DataGridTextColumn>
