@@ -159,17 +159,30 @@ namespace AlphaTechnologies.ReportCard.Presentation.WPF.ViewModels.DataViewModel
                         }
                     }
                 }
-                return $"{WorkStatusEnum.FullDay.GetCode()}({fullDayCount});" +
-                    $"{WorkStatusEnum.NotOnWork.GetCode()}({notOnWorkCount});" +
-                    $"{WorkStatusEnum.Holiday.GetCode()}({holidayCount});" +
-                    $"{WorkStatusEnum.WorkOnHoliday.GetCode()}({workOnHolidayCount});" +
-                    $"{WorkStatusEnum.Seek.GetCode()}({seekCount});" +
-                    $"{WorkStatusEnum.BusinessTrip.GetCode()}({businessTripCount});" +
-                    $"{WorkStatusEnum.PaidVacation.GetCode()}({paidVacationCount});" +
-                    $"{WorkStatusEnum.UnpaidVacation.GetCode()}({unPaidVacationCount});" +
-                    $"{WorkStatusEnum.BusinessDay.GetCode()}({businessDayCount});" +
-                    $"{WorkStatusEnum.LeaveForThePeriodOfStudy.GetCode()}({leaveForThePeriodOfStudyCount});" +
-                    $"{WorkStatusEnum.ParentalLeave.GetCode()}({parentalLeaveCount});";
+                StringBuilder builder = new StringBuilder();
+                if (fullDayCount > 0)
+                    builder.Append($"{WorkStatusEnum.FullDay.GetCode()}({fullDayCount});");
+                if (notOnWorkCount > 0)
+                    builder.Append($"{WorkStatusEnum.NotOnWork.GetCode()}({notOnWorkCount});");
+                if (holidayCount > 0)
+                    builder.Append($"{WorkStatusEnum.Holiday.GetCode()}({holidayCount});");
+                if (workOnHolidayCount > 0)
+                    builder.Append($"{WorkStatusEnum.WorkOnHoliday.GetCode()}({workOnHolidayCount});");
+                if (seekCount > 0)
+                    builder.Append($"{WorkStatusEnum.Seek.GetCode()}({seekCount});");
+                if (businessTripCount > 0)
+                    builder.Append($"{WorkStatusEnum.BusinessTrip.GetCode()}({businessTripCount});");
+                if (paidVacationCount > 0)
+                    builder.Append($"{WorkStatusEnum.PaidVacation.GetCode()}({paidVacationCount});");
+                if (unPaidVacationCount > 0)
+                    builder.Append($"{WorkStatusEnum.UnpaidVacation.GetCode()}({unPaidVacationCount});");
+                if (businessDayCount > 0)
+                    builder.Append($"{WorkStatusEnum.BusinessDay.GetCode()}({businessDayCount});");
+                if (leaveForThePeriodOfStudyCount > 0)
+                    builder.Append($"{WorkStatusEnum.LeaveForThePeriodOfStudy.GetCode()}({leaveForThePeriodOfStudyCount});");
+                if (parentalLeaveCount > 0)
+                    builder.Append($"{WorkStatusEnum.ParentalLeave.GetCode()}({parentalLeaveCount});");
+                return builder.ToString();
             }
         }
 
